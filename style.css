@@ -4,15 +4,20 @@ body {
     background-color: #000;
     /* background-color: #121212;  */
     color: #fff; /* White text */
-    display: flex; /* Use flexbox for centering */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
     height: 100vh; /* Make body fill the viewport height */
-    overflow: hidden; /* Hide scrollbars */
+    overflow: auto; /* Hide scrollbars */
 }
 
 .container {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
     text-align: center;
+    max-width: 80%; /* Use a percentage for dynamic width */
+    margin: 0 auto; /* Center the container horizontally */
+    padding: 10px; /* Add padding for spacing */
+    height: 100vh;
 }
 
 .logo .hexagon {
@@ -42,13 +47,13 @@ h1 {
 .buttons {
     display: flex; /* Arrange buttons in a row */
     justify-content: center; /* Center buttons horizontally */
-    gap: 100px; /* Adjust spacing between buttons */
+    gap: 50px; /* Adjust spacing between buttons */
     margin-top: 50px; /* Space above the buttons */
 }
 
 .button {
     display: inline-block;
-    padding: 15px 80px; /* Adjust button size (height and width) */
+    padding: 10px 40px; /* Adjust button size (height and width) */
     font-size: 1.2rem; /* Adjust button text size */
     font-family: 'Inconsolata', monospace; /* Apply Inconsolata font */
     font-weight: 300; /* Use regular weight (adjust as needed) */
@@ -57,6 +62,7 @@ h1 {
     text-decoration: none; /* Remove underline */
     text-align: center;
     transition: all 0.2s ease-in-out; /* Smooth hover effect */
+    width: 150px;
 }
 
 .button:hover {
@@ -65,15 +71,23 @@ h1 {
     font-weight: 500; /* Use regular weight (adjust as needed) */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
+h1 {
+    font-size: 4rem; /* Reduce font size for smaller screens */
+}
+.subtitle {
+    font-size: 1.2rem; /* Adjust subtitle size for smaller screens */
+}
 .buttons {
     flex-wrap: wrap; /* Stack buttons on smaller screens */
     gap: 10px; /* Adjust spacing for smaller screens */
+    margin-top: 30px;
 }
 
 .button {
     padding: 10px 20px; /* Make buttons smaller for mobile */
     font-size: 0.9rem;
+    width: auto;
 }
 }
   
@@ -99,17 +113,19 @@ canvas#background {
     display: flex; /* Flexbox for side-by-side layout */
     align-items: center; /* Vertically align content */
     justify-content: space-between; /* Space between text and image */
-    padding: 40px; /* Add padding around the container */
+    padding-left: 5%;
 }
 
 /* Left Section: Text Styling */
 .about-text {
     flex: 1; /* Take up available space on the left */
+    min-width: 40%;
+    max-width: 50%; /* Limit width for larger screens */
 }
 
 .about-heading {
     font-family: 'Poppins', sans-serif; /* Use Poppins font for heading */
-    font-size: 5rem; /* Adjust heading size */
+    font-size: 4rem; /* Adjust heading size */
     font-weight: 100; /* Bold heading */
     margin-bottom: 20px; /* Add space below heading */
 }
@@ -122,14 +138,69 @@ canvas#background {
 }
 
 /* Right Section: Image Styling */
+.about-image {
+    flex: 1; /* Take up available space */
+    display: flex;
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+    min-width: 40%; /* Ensure a minimum width for the image */
+    max-width: 50%; /* Limit the maximum width */
+}
 .about-image img {
-    margin-top: 70px;
-    margin-right: -100px;
-    width: 1000px; /* Adjust image width */
+    width: 100%; /* Make the image responsive */
+    max-width: 100%; /* Ensure it doesn't exceed its container */
     height: auto; /* Maintain aspect ratio */
     border-radius: 10px; /* Optional: Add rounded corners to the image */
 }
-  
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .about-container {
+        flex-direction: column; /* Stack text and image vertically */
+        align-items: center; /* Center-align content */
+        padding: 5%; /* Adjust padding for smaller screens */
+    }
+
+    .about-text, .about-image {
+        max-width: 90%; /* Allow more width for smaller screens */
+    }
+
+    .about-heading {
+        font-size: 2rem; /* Reduce heading size for smaller screens */
+    }
+
+    .about-description {
+        font-size: 0.9rem; /* Reduce text size for smaller screens */
+    }
+
+    .about-image img {
+        max-width: 80%; /* Reduce image size for smaller screens */
+    }
+}
+
+.home-button-container {   
+    margin: 20px; /* Add some spacing around the button */
+    width: 100%; /* Full width for the button container */
+}
+
+.home-button {
+    display: inline-block;
+    padding: 10px 20px; /* Adjust button size */
+    font-size: 1rem; /* Adjust font size */
+    font-family: 'Inconsolata', monospace; /* Use consistent font */
+    font-weight: 400;
+    color: #fff; /* Button text color */
+    background-color: #000; /* Button background color */
+    border: 1px solid #fff; /* Button border */
+    text-decoration: none; /* Remove underline */
+    border-radius: 5px; /* Add rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+.home-button:hover {
+    background-color: #fff; /* Change background on hover */
+    color: #000; /* Change text color on hover */
+}
 
 
 /* Contact Page Container */
