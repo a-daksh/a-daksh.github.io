@@ -8,6 +8,7 @@ module.exports = {
     siteUrl: 'https://a-daksh.github.io/portfolio', // GitHub Pages URL
     image: '/og.png', // Path to your image you placed in the 'static' folder
   },
+  pathPrefix: '/portfolio',
   plugins: [
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
