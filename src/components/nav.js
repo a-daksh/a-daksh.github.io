@@ -121,7 +121,7 @@ const Nav = ({ isHome }) => {
                 navLinks.map(({ url, name }, i) => (
                   <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
                     <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
-                      <a href={url}>{name}</a>
+                      <Link to={url}>{name}</Link>
                     </li>
                   </CSSTransition>
                 ))}

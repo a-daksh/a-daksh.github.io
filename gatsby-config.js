@@ -6,10 +6,9 @@ module.exports = {
     title: 'Daksh Adhar | Portfolio',
     description:
       'Portfolio website of Daksh Adhar.',
-    siteUrl: 'https://a-daksh.github.io', // Remove /portfolio from here
+    siteUrl: 'https://a-daksh.github.io/portfolio', // Remove /portfolio from here
     image: '/og.png', // Path to your image you placed in the 'static' folder
   },
-  pathPrefix: '/portfolio',
   plugins: [
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
