@@ -1,0 +1,81 @@
+{
+  "name": "daksh-adhar-portfolio",
+  "description": "Portfolio website of Daksh Adhar",
+  "version": "1.0.0",
+  "author": "Daksh Adhar <dakshadhar1810@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a-daksh/portfolio"
+  },
+  "keywords": [
+    "gatsby",
+    "portfolio",
+    "robotics"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "prepare": "husky install",
+    "deploy": "gatsby build && gh-pages -d public"
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "prettier --write"
+    ],
+    "*.js": [
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "@brainhubeu/react-carousel": "^1.19.26",
+    "animejs": "^3.1.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "gatsby": "^5.12.9",
+    "gatsby-plugin-google-tagmanager": "^5.12.3",
+    "gatsby-plugin-image": "^3.12.3",
+    "gatsby-plugin-manifest": "^5.12.3",
+    "gatsby-plugin-netlify": "^5.1.1",
+    "gatsby-plugin-offline": "^6.12.3",
+    "gatsby-plugin-react-helmet": "^6.12.0",
+    "gatsby-plugin-robots-txt": "^1.8.0",
+    "gatsby-plugin-sharp": "^5.12.3",
+    "gatsby-plugin-sitemap": "^6.12.3",
+    "gatsby-plugin-styled-components": "^6.12.0",
+    "gatsby-remark-code-titles": "^1.1.0",
+    "gatsby-remark-external-links": "0.0.4",
+    "gatsby-remark-images": "^7.12.0",
+    "gatsby-remark-prismjs": "^7.12.0",
+    "gatsby-source-filesystem": "^5.12.0",
+    "gatsby-transformer-remark": "^6.12.0",
+    "gatsby-transformer-sharp": "^5.12.0",
+    "lodash": "^4.17.19",
+    "prismjs": "^1.17.1",
+    "prop-types": "^15.7.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
+    "react-transition-group": "^4.3.0",
+    "scrollreveal": "^4.0.5",
+    "smooth-scroll": "^16.1.0",
+    "styled-components": "^6.1.0"
+  },
+  "devDependencies": {
+    "@upstatement/eslint-config": "2.0.0",
+    "@upstatement/prettier-config": "^1.1.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.53.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "gatsby-remark-code-titles": "^1.1.0",
+    "gh-pages": "^6.1.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.2",
+    "prettier": "^3.0.3"
+  }
+}
