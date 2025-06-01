@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://dakshadhar.com/sitemap-0.xml
-Host: https://dakshadhar.com
+Sitemap: https://a-daksh.github.io/portfolio/sitemap-0.xml
+Host: https://a-daksh.github.io
