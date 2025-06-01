@@ -2,11 +2,12 @@ const config = require('./src/config');
 
 module.exports = {
   pathPrefix: '/portfolio',
+  assetPrefix: '/portfolio',
   siteMetadata: {
     title: 'Daksh Adhar | Portfolio',
     description:
       'Portfolio website of Daksh Adhar.',
-    siteUrl: 'https://a-daksh.github.io/portfolio', // Remove /portfolio from here
+    siteUrl: 'https://a-daksh.github.io', // Remove /portfolio from here
     image: '/og.png', // Path to your image you placed in the 'static' folder
   },
   plugins: [
@@ -22,7 +23,7 @@ module.exports = {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
         host: 'https://a-daksh.github.io',
-        sitemap: 'https://a-daksh.github.io/sitemap-0.xml',
+        sitemap: 'https://a-daksh.github.io/portfolio/sitemap-0.xml',
         policy: [{userAgent: '*', allow: '/'}]
       }
     },
