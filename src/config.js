@@ -11,6 +11,10 @@ module.exports = {
       url: 'https://www.instagram.com/daksh_adhar/',
     },
     {
+      name: 'Twitter',
+      url: 'https://twitter.com/DakshAdhar',
+    },
+    {
       name: 'Linkedin',
       url: 'https://www.linkedin.com/in/daksh-adhar/',
     },
