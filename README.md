@@ -4,7 +4,7 @@
 
 Hi, I'm **Daksh Adhar**, and I like building robots. This is the source code for my personal portfolio website.
 
-> **Live site**: https://a-daksh.github.io/portfolio/
+> **Live site**: https://a-daksh.github.io
 
 ## Acknowledgements
 
