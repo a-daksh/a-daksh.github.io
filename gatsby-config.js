@@ -1,8 +1,7 @@
 const config = require('./src/config');
 
 module.exports = {
-  pathPrefix: '/portfolio',
-  assetPrefix: '/portfolio',
+  // pathPrefix and assetPrefix removed to deploy at root
   siteMetadata: {
     title: 'Daksh Adhar | Portfolio',
     description:
@@ -23,7 +22,7 @@ module.exports = {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
         host: 'https://a-daksh.github.io',
-        sitemap: 'https://a-daksh.github.io/portfolio/sitemap-0.xml',
+        sitemap: 'https://a-daksh.github.io/sitemap-0.xml',
         policy: [{userAgent: '*', allow: '/'}]
       }
     },
