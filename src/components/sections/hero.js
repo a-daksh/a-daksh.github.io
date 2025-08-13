@@ -39,27 +39,67 @@ const StyledHeroSection = styled.section`
     color: var(--color-accent);
     border-color: var(--color-accent);
   }
+
+  .typewriter {
+    display: inline-block;
+    border-right: 2px solid var(--color-accent);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { border-color: var(--color-accent); }
+    51%, 100% { border-color: transparent; }
+  }
 `;
 
 const Hero = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [currentText, setCurrentText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const words = ['Robots.', 'Humanoids.', 'cool stuff.'];
 
   useEffect(() => {
     const timeout = setTimeout(() => setIsMounted(true), navDelay);
     return () => clearTimeout(timeout);
   }, []);
 
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const typeSpeed = isDeleting ? 50 : 100;
+    const currentWord = words[currentWordIndex];
+
+    const timeout = setTimeout(() => {
+      if (!isDeleting && currentText === currentWord) {
+        // Finished typing, wait then start deleting
+        setTimeout(() => setIsDeleting(true), 5000);
+      } else if (isDeleting && currentText === '') {
+        // Finished deleting, move to next word
+        setIsDeleting(false);
+        setCurrentWordIndex((prev) => (prev + 1) % words.length);
+      } else {
+        // Continue typing or deleting
+        setCurrentText(prev =>
+          isDeleting
+            ? prev.slice(0, -1)
+            : currentWord.slice(0, prev.length + 1)
+        );
+      }
+    }, typeSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [currentText, isDeleting, currentWordIndex, isMounted, words]);
+
   const one = <h1>Hi, my name is</h1>;
-  const two = <h2 className="big-heading">Daksh Adhar.</h2>;
-  const three = <h3 className="big-heading">I like building cool stuff.</h3>;
-  const four = (
-    <p>
-    {/* I am a robotics engineer and researcher with a deep interest in intelligent systems and human-robot interaction. Currently based in Pittsburgh, I'm pursuing my Master's at Carnegie Mellon University, where I focus on surgical robotics. With a foundation in engineering physics and experience building both software and hardware systems—from prosthetic control to autonomous drones—I aim to design impactful, intelligent machines that blend precision with adaptability.     */}
-    I'm a robotics engineer pursuing my Master's at Carnegie Mellon University, focusing on humanoid and surgical robotics. With a background in engineering physics, I develop human-centered machines that operate safely in complex, real-world environments.
-    </p>
+  const two = <h2 className="big-heading">Daksh Adhar</h2>;
+  const three = (
+    <h3 className="big-heading">
+      I like building <span className="typewriter">{currentText}</span>
+    </h3>
   );
 
-  const items = [one, two, three, four];
+  const items = [one, two, three];
 
   return (
     <StyledHeroSection>
