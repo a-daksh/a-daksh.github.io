@@ -3,20 +3,20 @@ module.exports = {
 
   socialMedia: [
     {
-      name: 'GitHub',
-      url: 'https://github.com/a-daksh',
+      name: 'Linkedin',
+      url: 'https://www.linkedin.com/in/daksh-adhar/',
     },
     {
-      name: 'Instagram',
-      url: 'https://www.instagram.com/daksh_adhar/',
+      name: 'GitHub',
+      url: 'https://github.com/a-daksh',
     },
     {
       name: 'Twitter',
       url: 'https://twitter.com/DakshAdhar',
     },
     {
-      name: 'Linkedin',
-      url: 'https://www.linkedin.com/in/daksh-adhar/',
+      name: 'Instagram',
+      url: 'https://www.instagram.com/daksh_adhar/',
     },
   ],
 
@@ -32,9 +32,14 @@ module.exports = {
     {
       name: 'Skills',
       url: '/#skills',
-    },    {
+    },    
+    {
       name: 'Projects',
       url: '/#featured',
+    },
+    {
+      name: 'Publications',
+      url: '/#publications',
     },
     {
       name: 'Contact',

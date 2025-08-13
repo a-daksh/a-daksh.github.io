@@ -133,20 +133,20 @@ const About = () => {
       <div className="inner">
         <StyledText>
           <div>
-          <p>
-            Hello! I'm Daksh, a robotics engineer and graduate student at Carnegie Mellon University, currently based in Pittsburgh, PA. I previously earned my Bachelor's in Engineering Physics from the <a href="https://www.iitg.ac.in/" target="_blank" rel="noopener noreferrer">Indian Institute of Technology Guwahati</a>.
-          </p>
+          <p> 
+            Hi! I'm Daksh, a graduate student at the Robotics Institute, Carnegie Mellon University, where I'm pursuing a Master of Science in Robotics Systems Development. I previously earned my Bachelor of Technology in Engineering Physics from the <a href="https://www.iitg.ac.in/" target="_blank" rel="noopener noreferrer">Indian Institute of Technology Guwahati</a>.
+          </p> 
 
-          <p>
-            I'm interested in building intelligent robotic systems that can safely and reliably interact with the physical world. I enjoy working at the intersection of learning, control, and real-time perception, especially in medical robotics and biomimetics.
-          </p>
+          <p> 
+            I'm interested in building intelligent robotic systems that can safely and reliably interact with the human world. I enjoy working at the intersection of learning, control, and real-time perception, with a particular focus on medical and biomimetic robotics.
+          </p> 
 
-          <p>
-            I'm currently an AI Resident at <a href="https://www.1x.tech/" target="_blank" rel="noopener noreferrer">1X</a>, working on their humanoid robots. I've previously collaborated with <a href="https://www.iitg.ac.in/s.m.hazarika/" target="_blank" rel="noopener noreferrer">Dr. S. M. Hazarika</a> at IIT Guwahati and <a href="https://sites.google.com/iitgn.ac.in/nvg/" target="_blank" rel="noopener noreferrer">Dr. Nithin V. George</a> at IIT Gandhinagar.
-          </p>
+          <p> 
+            I’m currently an AI Resident at <a href="https://www.1x.tech/" target="_blank" rel="noopener noreferrer">1X</a>, working on reinforcement learning for the NEO Gamma humanoid. Previously, I collaborated with <a href="https://www.iitg.ac.in/s.m.hazarika/" target="_blank" rel="noopener noreferrer">Dr. S. M. Hazarika</a> at IIT Guwahati and <a href="https://sites.google.com/iitgn.ac.in/nvg/" target="_blank" rel="noopener noreferrer">Dr. Nithin V. George</a> at IIT Gandhinagar.
+          </p> 
 
-          <p>
-          In my spare time, I'm usually playing minecraft, watching cooking videos (then ordering Panda Express :P), or sleeping.
+          <p> 
+            In my spare time, I’m usually playing Minecraft, watching cooking videos (and then ordering DoorDash :P), or sleeping.
           </p>
           </div>
         </StyledText>

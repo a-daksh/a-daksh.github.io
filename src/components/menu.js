@@ -98,7 +98,7 @@ const StyledSidebar = styled.aside`
     width: min(75vw, 400px);
     height: 100vh;
     outline: 0;
-    background-color: var(--color-bg-secondary);
+    background-color: var(--color-bg-primary);
     box-shadow: -10px 0px 30px -15px var(--color-shadow);
     z-index: 9;
     transform: translateX(${props => (props.menuOpen ? 0 : 100)}vw);
@@ -132,11 +132,7 @@ const StyledSidebar = styled.aside`
       }
 
       &:before {
-        content: '0' counter(item) '.';
-        display: block;
-        margin-bottom: 5px;
-        color: var(--color-accent);
-        font-size: var(--fz-sm);
+        display: none;
       }
     }
 
@@ -169,9 +165,9 @@ const Menu = () => {
         behavior: 'smooth',
         block: 'start',
       });
-      // Close mobile menu after clicking
-      setMenuOpen(false);
     }
+    // Always close mobile menu after clicking any link
+    setMenuOpen(false);
   };
 
   const buttonRef = useRef(null);

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Layout, Hero, About, Jobs, Featured, Contact } from '@components';
 import Skills from '../components/sections/skills';
+import Publications from '../components/sections/publications';
 
 const StyledMainContainer = styled.main`
   counter-reset: section;
@@ -16,6 +17,7 @@ const IndexPage = ({ location }) => (
       <Jobs />
       <Skills />
       <Featured />
+      <Publications />
       <Contact />
     </StyledMainContainer>
   </Layout>
