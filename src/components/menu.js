@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, withPrefix } from 'gatsby';
+import { withPrefix } from 'gatsby';
 import styled from 'styled-components';
 import { navLinks } from '@config';
 import { KEY_CODES } from '@utils';
@@ -160,6 +160,20 @@ const Menu = () => {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  const smoothScrollTo = (url) => {
+    const targetId = url.replace('/#', '');
+    const targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+      // Close mobile menu after clicking
+      setMenuOpen(false);
+    }
+  };
+
   const buttonRef = useRef(null);
   const navRef = useRef(null);
 
@@ -254,7 +268,15 @@ const Menu = () => {
               <ol>
                 {navLinks.map(({ url, name }, i) => (
                   <li key={i}>
-                    <Link to={url}>{name}</Link>
+                    <a 
+                      href={url}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        smoothScrollTo(url);
+                      }}
+                    >
+                      {name}
+                    </a>
                   </li>
                 ))}
               </ol>

@@ -75,7 +75,7 @@
     "gatsby-remark-code-titles": "^1.1.0",
     "gh-pages": "^6.1.0",
     "husky": "^8.0.0",
-    "lint-staged": "^15.0.2",
+    "lint-staged": "^16.1.5",
     "prettier": "^3.0.3"
   }
 }

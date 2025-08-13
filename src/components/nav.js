@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, withPrefix } from 'gatsby';
+import { withPrefix } from 'gatsby';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled, { css } from 'styled-components';
@@ -93,6 +93,18 @@ const Nav = ({ isHome }) => {
     setScrolledToTop(window.pageYOffset < 50);
   };
 
+  const smoothScrollTo = (url) => {
+    const targetId = url.replace('/#', '');
+    const targetElement = document.getElementById(targetId);
+
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  };
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsMounted(true);
@@ -121,7 +133,15 @@ const Nav = ({ isHome }) => {
                 navLinks.map(({ url, name }, i) => (
                   <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
                     <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
-                      <Link to={url}>{name}</Link>
+                      <a
+                        href={url}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          smoothScrollTo(url);
+                        }}
+                      >
+                        {name}
+                      </a>
                     </li>
                   </CSSTransition>
                 ))}
