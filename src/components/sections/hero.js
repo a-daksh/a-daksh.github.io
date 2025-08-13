@@ -73,7 +73,7 @@ const Hero = () => {
     const timeout = setTimeout(() => {
       if (!isDeleting && currentText === currentWord) {
         // Finished typing, wait then start deleting
-        setTimeout(() => setIsDeleting(true), 5000);
+        setTimeout(() => setIsDeleting(true), 2500);
       } else if (isDeleting && currentText === '') {
         // Finished deleting, move to next word
         setIsDeleting(false);
