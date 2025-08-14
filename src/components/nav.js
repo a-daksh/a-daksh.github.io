@@ -7,6 +7,7 @@ import { navLinks } from '@config';
 import { loaderDelay } from '@utils';
 import { useScrollDirection } from '@hooks';
 import { Menu } from '@components';
+import { ThemeToggle } from '@components';
 
 const StyledHeader = styled.header`
   ${({ theme }) => theme.mixins.flexBetween};
@@ -40,6 +41,26 @@ const StyledNav = styled.nav`
   font-family: var(--font-mono);
   counter-reset: item 0;
   z-index: 12;
+`;
+
+const StyledThemeToggleContainer = styled.div`
+  position: absolute;
+  right: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  @media (max-width: 1080px) {
+    right: 60px;
+  }
+  @media (max-width: 768px) {
+    right: 80px;
+  }
+`;
+
+const StyledRightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
 `;
 
 const StyledLinks = styled.div`
@@ -165,13 +186,25 @@ const Nav = ({ isHome }) => {
           </TransitionGroup>
         </StyledLinks>
 
-        <TransitionGroup component={null}>
-          {isMounted && (
-            <CSSTransition classNames={fadeClass} timeout={timeout}>
-              <Menu />
-            </CSSTransition>
-          )}
-        </TransitionGroup>
+        <StyledThemeToggleContainer>
+          <TransitionGroup component={null}>
+            {isMounted && (
+              <CSSTransition classNames={fadeClass} timeout={timeout}>
+                <ThemeToggle />
+              </CSSTransition>
+            )}
+          </TransitionGroup>
+        </StyledThemeToggleContainer>
+
+        <StyledRightSection>
+          <TransitionGroup component={null}>
+            {isMounted && (
+              <CSSTransition classNames={fadeClass} timeout={timeout}>
+                <Menu />
+              </CSSTransition>
+            )}
+          </TransitionGroup>
+        </StyledRightSection>
       </StyledNav>
     </StyledHeader>
   );

@@ -2,7 +2,6 @@ import { createGlobalStyle } from 'styled-components';
 import Fonts from './fonts';
 import TransitionStyles from './TransitionStyles';
 import PrismStyles from './PrismStyles';
-import bgImage from '../images/bg-image.png'; // Adjust extension if needed
 
 const GlobalStyle = createGlobalStyle`
   ${Fonts};
@@ -27,6 +26,9 @@ const GlobalStyle = createGlobalStyle`
     --color-success: #ECDFCC;
     --color-success-tint: rgba(236, 223, 204, 0.1);
     --color-white: #fff;
+
+    --bg-image-url: url('../images/bg_black.jpg');
+    --bg-overlay: rgba(30, 32, 30, 0.8);
 
     --font-sans: 'Calibre', 'San Francisco', 'SF Pro Text', -apple-system, system-ui, sans-serif;
     --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
@@ -97,9 +99,7 @@ const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     
-    background-image: linear-gradient(rgba(var(--color-bg-primary-rgb), 0.8), rgba(var(--color-bg-primary-rgb), 0.8)), url('https://wallpapersok.com/images/hd/science-desktop-pcb-blueprint-0jbgpgtbffy2flj2.jpg');
-    // background-image: linear-gradient(rgba(var(--color-bg-primary-rgb), 0.4), rgba(var(--color-bg-primary-rgb), 0.8)), url('https://findyourlevel.com/wp-content/uploads/2016/11/Blueprint_BlackWhite2-1-scaled.jpeg');
-    // background-image: linear-gradient(rgba(var(--color-bg-primary-rgb), 0.5), rgba(var(--color-bg-primary-rgb), 0.5)), url(${bgImage});
+    background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), var(--bg-image-url);
     background-attachment: fixed;
 
 
