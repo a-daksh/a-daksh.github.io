@@ -37,6 +37,7 @@ export const ThemeProvider = ({ children }) => {
       root.style.setProperty('--color-bg-secondary', '#ECDFCC');
       root.style.setProperty('--color-bg-tertiary', '#ECDFCC');
       root.style.setProperty('--color-accent', '#fff');
+      root.style.setProperty('--color-accent-tint', 'rgba(255, 255, 255, 0.1)');
       root.style.setProperty('--color-text-primary', '#fff');
       root.style.setProperty('--color-text-secondary', '#ECDFCC');
       root.style.setProperty('--color-text-tertiary', '#ECDFCC');
@@ -50,6 +51,7 @@ export const ThemeProvider = ({ children }) => {
       root.style.setProperty('--color-bg-secondary', '#1E201E');
       root.style.setProperty('--color-bg-tertiary', '#1E201E');
       root.style.setProperty('--color-accent', '#1E201E');
+      root.style.setProperty('--color-accent-tint', 'rgba(0, 0, 0, 0.1)');
       root.style.setProperty('--color-text-primary', '#1E201E');
       root.style.setProperty('--color-text-secondary', '#323232');
       root.style.setProperty('--color-text-tertiary', '#323232');

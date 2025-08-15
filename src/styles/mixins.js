@@ -2,7 +2,7 @@ import { css } from 'styled-components';
 
 const button = css`
   color: var(--color-accent);
-  background-color: var(--color-accent-tint);
+  background-color: transparent;
   border: 1px solid var(--color-accent);
   border-radius: var(--border-radius);
   font-size: var(--fz-xs);
@@ -91,7 +91,7 @@ const mixins = {
 
   smallButton: css`
     color: var(--color-accent);
-    background-color: var(--color-accent-tint);
+    background-color: transparent;
     border: 1px solid var(--color-accent);
     border-radius: var(--border-radius);
     padding: 0.75rem 1rem;
@@ -113,7 +113,7 @@ const mixins = {
 
   bigButton: css`
     color: var(--color-accent);
-    background-color: var(--color-accent-tint);
+    background-color: transparent;
     border: 1px solid var(--color-accent);
     border-radius: var(--border-radius);
     padding: 1.25rem 1.75rem;
@@ -127,6 +127,8 @@ const mixins = {
     &:focus,
     &:active {
       background-color: var(--color-accent-tint);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px -15px var(--color-shadow);
     }
     &:after {
       display: none !important;

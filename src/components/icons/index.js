@@ -1,3 +1,4 @@
+export { default as IconArrowLeft } from './arrowLeft';
 export { default as IconExternal } from './external';
 export { default as Icon } from './icon';
 export { default as IconGitHub } from './github';

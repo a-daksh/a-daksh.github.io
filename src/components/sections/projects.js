@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useStaticQuery, graphql, navigate } from 'gatsby';
+import { useStaticQuery, graphql } from 'gatsby';
 import { GatsbyImage } from "gatsby-plugin-image"
 import styled from 'styled-components';
 import sr from '@utils/sr';
@@ -253,45 +253,25 @@ const StyledProject = styled.div`
   }
 `;
 
-const StyledArchiveLink = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 80px;
+const StyledProjectsSection = styled.section`
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 100px 20px;
   
   @media (max-width: 768px) {
-    margin-top: 60px;
+    padding: 80px 15px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 60px 15px;
   }
 `;
 
-const StyledArchiveButton = styled.button`
-  ${({ theme }) => theme.mixins.bigButton};
-  background: transparent;
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: var(--fz-sm);
-  padding: 1.25rem 1.75rem;
-  cursor: pointer;
-  transition: var(--transition);
-  
-  &:hover,
-  &:focus 
-  {
-    background-color: var(--color-accent-tint);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px -15px var(--color-shadow);
-  }
-  
-  &:active {
-    transform: translateY(-1px);
-  }
-`;
-
-const Featured = () => {
+const Projects = () => {
   const data = useStaticQuery(graphql`
     query {
-      featured: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/featured/" } }
+      projects: allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/projects/" } }
         sort: { frontmatter: { date: DESC } }
       ) {
         edges {
@@ -319,42 +299,35 @@ const Featured = () => {
     }
   `);
 
-  const featuredProjects = data.featured.edges.filter(({ node }) => node);
+  const projects = data.projects.edges.filter(({ node }) => node);
 
   const revealTitle = useRef(null);
   const revealProjects = useRef([]);
-  const revealArchiveLink = useRef(null);
-
   useEffect(() => {
     sr.reveal(revealTitle.current, srConfig());
     revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
-    sr.reveal(revealArchiveLink.current, srConfig(featuredProjects.length * 100));
   }, []);
 
-  const handleArchiveClick = () => {
-    navigate('/archive');
-  };
-
   return (
-    <section id="featured">
+    <StyledProjectsSection id="projects">
       <h2 className="numbered-heading" ref={revealTitle}>
-        Featured Work
+        Archive
       </h2>
 
       <div>
-        {featuredProjects &&
-          featuredProjects.map(({ node }, i) => {
+        {projects && projects.length > 0 ? (
+          projects.map(({ node }, i) => {
             const { frontmatter, html } = node;
             const { external, title, tech, github, cover } = frontmatter;
 
             return (
               <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
                 <div className="project-content">
-                  <p className="project-overline">Featured Project</p>
+                  <p className="project-overline">Project</p>
                   <h3 className="project-title">{title}</h3>
                   <div className="project-description" dangerouslySetInnerHTML={{ __html: html }} />
 
-                  {tech.length && (
+                  {tech && tech.length && (
                     <ul className="project-tech-list">
                       {tech.map((tech, i) => (
                         <li key={i}>{tech}</li>
@@ -383,16 +356,13 @@ const Featured = () => {
                 </div>
               </StyledProject>
             );
-          })}
+          })
+        ) : (
+          <p>No projects found. Add some projects to the content/projects/ directory.</p>
+        )}
       </div>
-
-      {/* <StyledArchiveLink ref={revealArchiveLink}>
-        <StyledArchiveButton onClick={handleArchiveClick}>
-          Other Noteworthy Projects
-        </StyledArchiveButton>
-      </StyledArchiveLink> */}
-    </section>
+    </StyledProjectsSection>
   );
 };
 
-export default Featured;
+export default Projects;
