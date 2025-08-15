@@ -88,7 +88,12 @@ const GlobalStyle = createGlobalStyle`
 
   ::selection {
     background-color: var(--color-text-tertiary);
-    color: var(--color-text-primary);
+    color: var(--color-bg-primary);
+  }
+
+  ::-moz-selection {
+    background-color: var(--color-text-tertiary);
+    color: var(--color-bg-primary);
   }
 
   body {

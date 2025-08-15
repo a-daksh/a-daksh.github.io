@@ -386,11 +386,11 @@ const Featured = () => {
           })}
       </div>
 
-      {/* <StyledArchiveLink ref={revealArchiveLink}>
+      <StyledArchiveLink ref={revealArchiveLink}>
         <StyledArchiveButton onClick={handleArchiveClick}>
           Other Noteworthy Projects
         </StyledArchiveButton>
-      </StyledArchiveLink> */}
+      </StyledArchiveLink>
     </section>
   );
 };

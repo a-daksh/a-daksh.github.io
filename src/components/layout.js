@@ -4,6 +4,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Head, Nav, Social, Email, Footer } from '@components';
 import { GlobalStyle, theme } from '@styles';
 import { ThemeProvider as CustomThemeProvider } from '../contexts/ThemeContext';
+import TerminalTakeover from './TerminalTakeover';
+import useBeepDetection from '../hooks/useBeepDetection';
 
 // https://medium.com/@chrisfitkin/how-to-smooth-scroll-links-in-gatsby-3dc445299558
 if (typeof window !== 'undefined') {
@@ -48,6 +50,12 @@ const StyledContent = styled.div`
 
 const Layout = ({ children, location }) => {
   const isHome = location.pathname === '/';
+  const [showTerminal, setShowTerminal] = useState(false);
+
+  // Detect "beep" typing
+  useBeepDetection(() => {
+    setShowTerminal(true);
+  });
 
   useEffect(() => {
     if (location.hash) {
@@ -100,6 +108,10 @@ const Layout = ({ children, location }) => {
                 <Footer />
               </div>
             </StyledContent>
+
+            {showTerminal && (
+              <TerminalTakeover onClose={() => setShowTerminal(false)} />
+            )}
           </ThemeProvider>
         </CustomThemeProvider>
       </div>
