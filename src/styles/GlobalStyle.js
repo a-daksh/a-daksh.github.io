@@ -65,6 +65,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     scrollbar-width: thin;
     scrollbar-color: var(--color-bg-secondary) transparent;
+    zoom: 0.9
   }
 
   /* Scrollbar Styles */
