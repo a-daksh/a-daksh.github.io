@@ -44,17 +44,8 @@ const StyledNav = styled.nav`
 `;
 
 const StyledThemeToggleContainer = styled.div`
-  position: absolute;
-  right: 80px;
-  top: 50%;
-  transform: translateY(-50%);
-  
-  @media (max-width: 1080px) {
-    right: 60px;
-  }
-  @media (max-width: 768px) {
-    right: 80px;
-  }
+  display: flex;
+  align-items: center;
 `;
 
 const StyledRightSection = styled.div`
