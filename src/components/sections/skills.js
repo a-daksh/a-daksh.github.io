@@ -10,6 +10,10 @@ const StyledSkillsSection = styled.section`
   max-width: 700px;
   min-height: 50vh;
 
+  @media (max-width: 768px) {
+    min-height: auto;
+  }
+
   .inner {
     display: flex;
 
@@ -40,8 +44,14 @@ const SliderWrapper = styled.div`
     object-fit: contain;
     display: block;
     margin: 0 auto;
-    filter: grayscale(80%);
+    filter: grayscale(50%);
 
+    @media (max-width: 600px) {
+      width: 60px !important;
+      height: 60px !important;
+      min-width: 60px !important;
+      min-height: 60px !important;
+    }
   }
   
   .BrainhubCarousel .skill-icon-img {
@@ -49,6 +59,13 @@ const SliderWrapper = styled.div`
     height: 80px !important;
     min-width: 80px !important;
     min-height: 80px !important;
+    
+    @media (max-width: 600px) {
+      width: 60px !important;
+      height: 60px !important;
+      min-width: 60px !important;
+      min-height: 60px !important;
+    }
   }
   
   .skill-icon-container .skill-icon-img {
@@ -56,6 +73,13 @@ const SliderWrapper = styled.div`
     height: 80px !important;
     min-width: 80px !important;
     min-height: 80px !important;
+    
+    @media (max-width: 600px) {
+      width: 60px !important;
+      height: 60px !important;
+      min-width: 60px !important;
+      min-height: 60px !important;
+    }
   }
   
   .BrainhubCarousel__arrows {
@@ -145,7 +169,6 @@ const Skills = () => {
                   src={skill.icon}
                   alt={skill.label}
                   className="skill-icon-img"
-                  style={{ width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}
                 />
               </div>
             ))}

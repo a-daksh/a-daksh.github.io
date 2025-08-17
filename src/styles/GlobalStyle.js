@@ -103,15 +103,38 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
+    position: relative;
     
-    background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), var(--bg-image-url);
-    background-attachment: fixed;
-
-
     color: var(--color-text-tertiary);
     font-family: var(--font-sans);
     font-size: var(--fz-xl);
     line-height: 1.3;
+
+    &::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: var(--bg-image-url);
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      filter: blur(1.5px);
+      z-index: -2;
+    }
+
+    &::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-overlay);
+      z-index: -1;
+    }
 
     @media (max-width: 480px) {
       font-size: var(--fz-lg);
@@ -187,7 +210,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     @media (max-width: 480px) {
-      padding: 60px 0;
+      padding: 40px 0;
     }
   }
 
@@ -308,6 +331,11 @@ const GlobalStyle = createGlobalStyle`
     cursor: pointer;
     border: 0;
     border-radius: 0;
+  }
+  
+  /* Auto-blur buttons after click to prevent sticky hover */
+  button:focus:not(:focus-visible) {
+    outline: none;
   }
 
   input, textarea {

@@ -46,7 +46,7 @@ const StyledText = styled.div`
   }
 
   p {
-    text-align: justify;
+    text-align: left;
   }
 `;
 
@@ -146,7 +146,7 @@ const About = () => {
           </p> 
 
           <p> 
-            In my spare time, I’m usually playing Minecraft, watching cooking videos (and then ordering DoorDash :P), or sleeping.
+            In my spare time, I’m usually playing Minecraft, watching cooking videos (then ordering DoorDash :P), or sleeping.
           </p>
           </div>
         </StyledText>

@@ -59,7 +59,7 @@ const StyledLinks = styled.div`
   align-items: center;
   margin: 0 auto;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     display: none;
   }
 

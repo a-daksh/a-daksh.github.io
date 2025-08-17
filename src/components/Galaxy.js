@@ -20,7 +20,7 @@ const GalaxyOverlay = styled.div`
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.01);
-    backdrop-filter: blur(1.25px);
+    backdrop-filter: blur(1.5px);
     z-index: 10000;
     pointer-events: none;
   }

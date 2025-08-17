@@ -32,6 +32,13 @@ const StyledTabList = styled.ul`
     width: calc(100% + 100px);
     margin-left: -50px;
     margin-bottom: 30px;
+    
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
   }
   @media (max-width: 480px) {
     width: calc(100% + 50px);
@@ -107,14 +114,14 @@ const StyledHighlight = styled.div`
   @media (max-width: 600px) {
     top: auto;
     bottom: 0;
-    width: 100%;
-    max-width: var(--tab-width);
+    left: 50px;
+    width: var(--highlight-width, 120px);
     height: 2px;
-    margin-left: 50px;
-    transform: translateX(calc(${({ activeTabId }) => activeTabId} * var(--tab-width)));
+    margin-left: 0;
+    transform: translateX(var(--highlight-offset, 0px));
   }
   @media (max-width: 480px) {
-    margin-left: 25px;
+    left: 25px;
   }
 `;
 
@@ -185,9 +192,22 @@ const Jobs = () => {
   const [activeTabId, setActiveTabId] = useState(0);
   const [tabFocus, setTabFocus] = useState(null);
   const tabs = useRef([]);
+  const highlightRef = useRef(null);
 
   const revealContainer = useRef(null);
   useEffect(() => sr.reveal(revealContainer.current, srConfig()), []);
+
+  // Update highlight position and width on mobile
+  useEffect(() => {
+    if (highlightRef.current && tabs.current[activeTabId] && window.innerWidth <= 600) {
+      const activeTab = tabs.current[activeTabId];
+      const width = activeTab.getBoundingClientRect().width;
+      const offset = activeTab.offsetLeft - (window.innerWidth <= 480 ? 25 : 50);
+
+      highlightRef.current.style.setProperty('--highlight-width', `${width}px`);
+      highlightRef.current.style.setProperty('--highlight-offset', `${offset}px`);
+    }
+  }, [activeTabId]);
 
   const focusTab = () => {
     if (tabs.current[tabFocus]) {
@@ -247,7 +267,7 @@ const Jobs = () => {
                 </li>
               );
             })}
-          <StyledHighlight activeTabId={activeTabId} />
+          <StyledHighlight activeTabId={activeTabId} ref={highlightRef} />
         </StyledTabList>
 
         {jobsData &&

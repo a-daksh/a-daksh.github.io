@@ -22,7 +22,11 @@ const StyledToggle = styled.button`
 
   &:focus {
     outline: none;
-    background-color: var(--color-accent-tint);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 `;
 
@@ -68,8 +72,13 @@ const IconContainer = styled.div`
 const ThemeToggle = () => {
   const { isDark, toggleTheme } = useTheme();
 
+  const handleClick = (e) => {
+    toggleTheme();
+    e.target.blur(); // Remove focus after click
+  };
+
   return (
-    <StyledToggle onClick={toggleTheme} aria-label="Toggle theme">
+    <StyledToggle onClick={handleClick} aria-label="Toggle theme">
       <IconContainer isActive={isDark}>
         {/* Moon Icon */}
         <svg viewBox="0 0 24 24">

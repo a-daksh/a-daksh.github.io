@@ -338,7 +338,7 @@ const Featured = () => {
   return (
     <section id="featured">
       <h2 className="numbered-heading" ref={revealTitle}>
-        Featured Work
+        Featured Projects
       </h2>
 
       <div>
@@ -388,7 +388,7 @@ const Featured = () => {
 
       <StyledArchiveLink ref={revealArchiveLink}>
         <StyledArchiveButton onClick={handleArchiveClick}>
-          Other Noteworthy Projects
+          View Full Project Archive
         </StyledArchiveButton>
       </StyledArchiveLink>
     </section>

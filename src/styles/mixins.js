@@ -13,11 +13,21 @@ const button = css`
   transition: var(--transition);
   padding: 1.25rem 1.75rem;
 
-  &:hover,
-  &:focus,
+  &:hover {
+    background-color: var(--color-accent-tint);
+  }
+  
+  &:focus {
+    outline: none;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  
   &:active {
     background-color: var(--color-accent-tint);
-    outline: none;
   }
   &:after {
     display: none !important;
@@ -101,8 +111,19 @@ const mixins = {
     text-decoration: none;
     cursor: pointer;
     transition: var(--transition);
-    &:hover,
-    &:focus,
+    &:hover {
+      background-color: var(--color-accent-tint);
+    }
+    
+    &:focus {
+      outline: none;
+    }
+    
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    
     &:active {
       background-color: var(--color-accent-tint);
     }
@@ -123,12 +144,25 @@ const mixins = {
     text-decoration: none;
     cursor: pointer;
     transition: var(--transition);
-    &:hover,
-    &:focus,
-    &:active {
+    &:hover {
       background-color: var(--color-accent-tint);
       transform: translateY(-3px);
       box-shadow: 0 10px 30px -15px var(--color-shadow);
+    }
+    
+    &:focus {
+      outline: none;
+    }
+    
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    
+    &:active {
+      background-color: var(--color-accent-tint);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px -10px var(--color-shadow);
     }
     &:after {
       display: none !important;
