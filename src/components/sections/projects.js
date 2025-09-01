@@ -209,12 +209,11 @@ const StyledProject = styled.div`
 
       &:hover,
       &:focus {
-        background: transparent;
-        &:before,
+        &:before {
+          opacity: 0;
+        }
         .img {
-          opacity: 1
-          background: transparent;
-          filter: none;
+          transform: scale(1.05);
           transition: var(--transition);
         }
       }
@@ -231,23 +230,19 @@ const StyledProject = styled.div`
         z-index: 3;
         transition: var(--transition);
         background-color: var(--color-bg-primary);
-        mix-blend-mode: screen;
+        opacity: 0.3;
       }
     }
 
     .img {
       max-width: 700px;
       border-radius: var(--border-radius);
-      mix-blend-mode: multiply;
-      filter: grayscale(80%) contrast(1) brightness(90%);
       transition: var(--transition);
-
 
       @media (max-width: 768px) {
         object-fit: cover;
         width: auto;
         height: 100%;
-        filter: grayscale(80%) contrast(1) brightness(80%);
       }
     }
   }
@@ -272,13 +267,15 @@ const Projects = () => {
     query {
       projects: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/projects/" } }
-        sort: { frontmatter: { date: DESC } }
+        sort: { fileAbsolutePath: DESC }
       ) {
         edges {
           node {
             frontmatter {
               title
               cover {
+                publicURL
+                extension
                 childImageSharp {
                   gatsbyImageData(
                     layout: FULL_WIDTH
@@ -351,7 +348,11 @@ const Projects = () => {
 
                 <div className="project-image">
                   <a href={external ? external : github ? github : '#'}>
-                    <GatsbyImage image={cover.childImageSharp.gatsbyImageData} alt={title} className="img" />
+                    {cover && cover.extension === 'gif' ? (
+                      <img src={cover.publicURL} alt={title} className="img" />
+                    ) : cover && cover.childImageSharp ? (
+                      <GatsbyImage image={cover.childImageSharp.gatsbyImageData} alt={title} className="img" />
+                    ) : null}
                   </a>
                 </div>
               </StyledProject>

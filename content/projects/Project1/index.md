@@ -1,16 +1,10 @@
 ---
-date: '4'
-title: 'Project Alpha'
-cover: './image.png'
-github: 'https://example.com/broken-link-1'
-external: 'https://example.com/broken-link-2'
+title: 'Pipe Traversing Robot'
+cover: './image.gif'
+github: 'https://github.com/a-daksh/Pipe-Traversing-Robot'
 tech:
-  - Skill 1
-  - Skill 2
-  - Skill 3
-  - Skill 4
-  - Skill 5
+  - Fusion 360
+  - OpenCV
 showInProjects: true
 ---
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Built a 3D model for an autonomous in-pipe robot leveraging a screw-drive mechanism for smooth traversal through curved and irregular pipeline interiors. Using an onboard Raspberry Pi and camera, implemented Canny edge detection in OpenCV to identify cracks and leaks in real time.

@@ -1,16 +1,14 @@
 ---
-date: '4'
-title: 'Project Alpha'
+title: 'Bone.P.A.R.T.E'
 cover: './image.png'
-github: 'https://example.com/broken-link-1'
-external: 'https://example.com/broken-link-2'
+github: 'https://github.com/KNEEpoleon'
+external: 'https://mrsdprojects.ri.cmu.edu/2025teamd/'
 tech:
-  - Skill 1
-  - Skill 2
-  - Skill 3
-  - Skill 4
-  - Skill 5
+  - C++
+  - Python
+  - ROS2
+  - MoveIT
+  - SAM
 showInProjects: true
 ---
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+The project aims to address the limitations of Total Knee Arthroplasty by integrating AR  with robot assisted manipulation, enhancing surgical visualization and procedural accuracy. The system provides functionality to overlay a surgical plan on the patient’s anatomy using the Apple Vision Pro headset, while a KUKA LBR MED7 robotic arm executes surgical pin screwing tasks with sub-centimeter precision.

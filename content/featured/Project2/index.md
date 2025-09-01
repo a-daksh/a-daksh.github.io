@@ -1,16 +1,14 @@
 ---
-date: '4'
-title: 'Project Alpha'
-cover: './image.png'
-github: 'https://example.com/broken-link-1'
-external: 'https://example.com/broken-link-2'
+title: 'Unitree G1 Soccer Ball Kicking'
+cover: './image.gif'
+github: 'https://github.com/a-daksh/16745_Unitree_G1_Goal_Kicking'
+external: 'https://drive.google.com/file/d/1baNCbEeNHYRVjI_QtZgY7OsL3DrSKAbi/view?usp=sharing'
 tech:
-  - Skill 1
-  - Skill 2
-  - Skill 3
-  - Skill 4
-  - Skill 5
+  - Julia
+  - IHLQR
+  - TVLQR
+  - QP
+  - DIRCOL
 showInProjects: true
 ---
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+This project was completed as part of the Optimal Control and Reinforcement Learning Course at Carnegie Mellon University. We used direct collocation to generate an optimal trajectory for a Unitree G1 Humanoid to kick a ball at a target, and used inifinte-horizon and time-varying LQR to balance the robot and track the desired kicking trajectory. 

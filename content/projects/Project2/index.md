@@ -1,16 +1,11 @@
 ---
-date: '4'
-title: 'Project Alpha'
+title: 'Bio-Inspired Robotic Fish'
 cover: './image.png'
-github: 'https://example.com/broken-link-1'
-external: 'https://example.com/broken-link-2'
+github: 'https://github.com/a-daksh/Bio-Inspired-Robotic-Fish'
 tech:
-  - Skill 1
-  - Skill 2
-  - Skill 3
-  - Skill 4
-  - Skill 5
+  - RaspberryPi
+  - Open-loop-control
+  - SolidWorks
 showInProjects: true
 ---
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Built a biomimetic robotic fish for underwater exploration, designed to perform surveillance and mapping tasks with agile tail-driven propulsion. Developed the control system on Raspberry Pi to coordinate tail oscillation and buoyancy adjustments, enabling smooth underwater navigation and stability.
