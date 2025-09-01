@@ -1,12 +1,14 @@
 ---
-title: 'Kalman Filter-Based Multi-Camera Hand Tracking'
-cover: './image.png'
-github: 'https://github.com/a-daksh/Kalman_Filter_Based_Sensor_Fusion_for_Multi_Camera_Hand_Tracking'
+title: 'Unitree G1 Soccer Ball Kicking'
+cover: './image.gif'
+github: 'https://github.com/a-daksh/16745_Unitree_G1_Goal_Kicking'
+external: 'https://drive.google.com/file/d/1baNCbEeNHYRVjI_QtZgY7OsL3DrSKAbi/view?usp=sharing'
 tech:
-  - Kalman Filter
-  - YOLO
-  - MediaPipe
-  - Computer Vision
+  - Julia
+  - IHLQR
+  - TVLQR
+  - QP
+  - DIRCOL
 showInProjects: true
 ---
-Implemented a dual-camera sensor fusion system for hand tracking using Kalman filters, significantly improving joint angle estimation. Leveraged MediaPipe for accurate hand pose detection without camera calibration and integrated YOLO for real-time hand–object interaction tracking, evaluating performance with the Grasp Quality Index.
+This project was completed as part of the Optimal Control and Reinforcement Learning Course at Carnegie Mellon University. We used direct collocation to generate an optimal trajectory for a Unitree G1 Humanoid to kick a ball at a target, and used inifinte-horizon and time-varying LQR to balance the robot and track the desired kicking trajectory. 

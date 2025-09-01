@@ -1,12 +1,14 @@
 ---
-title: 'Kalman Filter-Based Multi-Camera Hand Tracking'
-cover: './image.png'
-github: 'https://github.com/a-daksh/Kalman_Filter_Based_Sensor_Fusion_for_Multi_Camera_Hand_Tracking'
+title: 'Bone.P.A.R.T.E'
+cover: './image.gif'
+github: 'https://github.com/KNEEpoleon'
+external: 'https://mrsdprojects.ri.cmu.edu/2025teamd/'
 tech:
-  - Kalman Filter
-  - YOLO
-  - MediaPipe
-  - Computer Vision
+  - C++
+  - Python
+  - ROS2
+  - MoveIT
+  - SAM
 showInProjects: true
 ---
-Implemented a dual-camera sensor fusion system for hand tracking using Kalman filters, significantly improving joint angle estimation. Leveraged MediaPipe for accurate hand pose detection without camera calibration and integrated YOLO for real-time hand–object interaction tracking, evaluating performance with the Grasp Quality Index.
+The project aims to address the limitations of Total Knee Arthroplasty by integrating AR  with robot assisted manipulation, enhancing surgical visualization and procedural accuracy. The system provides functionality to overlay a surgical plan on the patient’s anatomy using the Apple Vision Pro headset, while a KUKA LBR MED7 robotic arm executes surgical pin screwing tasks with sub-centimeter precision.

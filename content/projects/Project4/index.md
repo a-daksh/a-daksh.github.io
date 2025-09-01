@@ -1,13 +1,12 @@
 ---
-title: 'Pluto Drone Control and Trajectory Planning'
+title: 'Directional Tactile device for hearing impaired'
 cover: './image.gif'
-github: 'https://github.com/a-daksh/Pluto-Drone-Control'
+github: 'https://github.com/a-daksh/Directional-Assistive-device-for-deaf'
+external: 'https://drive.google.com/file/d/1ADwG2qgMqMwadstKHuSLamN3B5sjKGv8/view' 
 tech:
+  - TDoA
+  - RaspberryPi
   - Python
-  - PIDControl
-  - ArUco
-  - MSP
 showInProjects: true
 ---
-
-Developed a Python-based control system for the Pluto Drone, featuring a low-latency MSP socket interface (~40 ms). Built a RealSense + ArUco tag localization pipeline with 95% accuracy and designed a vision-based PID controller that enabled stable trajectory following with ~7% overshoot.
+Developed a Raspberry Pi–based wearable to improve spatial hearing for individuals with hearing impairment. Designed a 4-microphone TDoA system that achieved 10° directional resolution, and integrated haptic motors to provide tactile feedback of sound direction. This reduced user response time by 30%, enabling faster localization of alarming sounds.
