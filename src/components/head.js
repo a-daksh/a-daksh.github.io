@@ -93,7 +93,7 @@ const Head = ({ title, description, image }) => {
         {JSON.stringify(structuredData)}
       </script>
 
-      <meta name="google-site-verification" content="JdshZ3EvS1IpZvsqPwhoi1vrTlxH5NJxMxBF" />
+      <meta name="google-site-verification" content="samEnOLU4vT-NbHCtGuTKBKxASYyAwqdsYvLoI4sHMk" />
     </Helmet>
   );
 };
