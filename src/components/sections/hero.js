@@ -10,7 +10,7 @@ const StyledHeroSection = styled.section`
   align-items: flex-start;
   min-height: 100vh;
 
-  h1 {
+  p {
     margin: 0 0 30px 4px;
     color: var(--color-accent);
     font-family: var(--font-mono);
@@ -22,7 +22,13 @@ const StyledHeroSection = styled.section`
     }
   }
 
-  h3 {
+  h1 {
+    margin: 0;
+    color: var(--color-text-primary);
+    line-height: 0.9;
+  }
+
+  h2 {
     margin-top: 10px;
     color: var(--color-text-tertiary);
     line-height: 0.9;
@@ -91,12 +97,12 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, [currentText, isDeleting, currentWordIndex, isMounted, words]);
 
-  const one = <h1>Hi, my name is</h1>;
-  const two = <h2 className="big-heading">Daksh Adhar</h2>;
+  const one = <p>Hi, my name is</p>;
+  const two = <h1 className="big-heading">Daksh Adhar</h1>;
   const three = (
-    <h3 className="big-heading">
+    <h2 className="big-heading">
       I like building <span className="typewriter">{currentText}</span>
-    </h3>
+    </h2>
   );
 
   const items = [one, two, three];
