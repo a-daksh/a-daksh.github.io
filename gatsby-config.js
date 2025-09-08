@@ -5,11 +5,11 @@ module.exports = {
   siteMetadata: {
     title: 'Daksh Adhar',
     description:
-      'Daksh Adhar is a robotics engineer and software developer specializing in autonomous systems, machine learning, and full-stack development. View my portfolio, projects, and publications.',
+      'Hi! I am Daksh Adhar, a MS Robotic Systems Development (MRSD) student at Carnegie Mellon University graduating in May 2026. Welcome to my Website!',
     siteUrl: 'https://a-daksh.github.io',
     image: '/og.png',
     author: 'Daksh Adhar',
-    keywords: 'Daksh Adhar, robotics engineer, software developer, machine learning, autonomous systems, portfolio',
+    keywords: 'Daksh Adhar, robotics engineer, machine learning, AI, autonomous systems, portfolio, 1X, AI Resident',
   },
   plugins: [
     `gatsby-plugin-image`,

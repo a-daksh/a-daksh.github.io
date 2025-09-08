@@ -23,7 +23,7 @@ const StyledHeroSection = styled.section`
   }
 
   h1 {
-    margin: 0;
+    margin-top: 0.2em;
     color: var(--color-text-primary);
     line-height: 0.9;
   }
