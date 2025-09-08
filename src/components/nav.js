@@ -166,7 +166,7 @@ const Nav = ({ isHome }) => {
                 <div style={{ transitionDelay: `${isHome ? navLinks.length * 100 : 0}ms` }}>
                   <a
                     className="resume-button"
-                    href={withPrefix('/resume.pdf')}
+                    href={withPrefix('/Daksh_Adhar.pdf')}
                     target="_blank"
                     rel="noopener noreferrer">
                     Resume
