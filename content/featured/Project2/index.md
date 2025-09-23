@@ -1,7 +1,7 @@
 ---
 title: 'Stamp Pixel art using Franka arm'
 cover: './image.gif'
-github: 
+github: 'https://github.com/a-daksh/pixel-art-franka'
 external: 'https://drive.google.com/drive/folders/1fLW2rSwOEIGwB48E1Zd0QJzGh6RTqoWj?usp=sharing'
 tech:
   - ROS1

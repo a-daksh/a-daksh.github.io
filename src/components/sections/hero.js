@@ -63,7 +63,7 @@ const Hero = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const words = ['Robots.', 'Humanoids.', 'cool stuff.'];
+  const words = ['Robots.', 'cool stuff.'];
 
   useEffect(() => {
     const timeout = setTimeout(() => setIsMounted(true), navDelay);
