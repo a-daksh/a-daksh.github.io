@@ -47,6 +47,15 @@ const StyledText = styled.div`
 
   p {
     text-align: left;
+
+    a {
+      ${({ theme }) => theme.mixins.inlineLink};
+      color: var(--color-accent);
+
+      &:after {
+        width: 100% !important;
+      }
+    }
   }
 `;
 
