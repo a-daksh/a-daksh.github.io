@@ -1,14 +1,13 @@
 ---
-title: 'Unitree G1 Soccer Ball Kicking'
-cover: './image.gif'
-github: 'https://github.com/a-daksh/16745_Unitree_G1_Goal_Kicking'
-external: 'https://drive.google.com/drive/folders/1bkAzpjAIa1z8fcTbUcF7YR9m2Zbwwave?usp=sharing'
+title: 'CMU Vision Language Autonomy Challenge'
+cover: './image.png'
+github: 'https://github.com/a-daksh/CMU-VLA-Challenge-copypasta.git'
+external: 'https://drive.google.com/drive/folders/1OA9SbvrHb39ljxXzefxj5CtzCdYZuzCI?usp=drive_link'
 tech:
-  - Julia
-  - IHLQR
-  - TVLQR
-  - QP
-  - DIRCOL
+  - Python 
+  - ROS
+  - Gemini 2.5 Pro
+  - Docker
 showInProjects: true
 ---
-Built as part of the Optimal Control and Reinforcement Learning course at CMU, this project simulated a penalty-style soccer kick using the Unitree G1 humanoid. The system computed the required impulse to strike the ball toward a target, generated a feasible motion with direct collocation, and used infinite-horizon LQR for balancing along with time-varying LQR for trajectory tracking.
+Built for the CMU Vision-Language-Autonomy Challenge (IROS 2025), this project developed a Vision-Language Navigation system combining Gemini 2.5 Pro's embodied reasoning with a custom ROS state machine. The system intelligently resolves spatial queries (e.g., "closest to the window") to produce object references and waypoint plans under a strict 10-minute limit. The entire stack was containerized via Docker for reliable deployment on real robot hardware, achieving 3rd place in the competition.
