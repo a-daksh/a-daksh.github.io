@@ -55,7 +55,7 @@ const Head = ({ title, description, image }) => {
       "https://www.linkedin.com/in/daksh-adhar/",
       "https://github.com/a-daksh",
       "https://twitter.com/DakshAdhar",
-      "https://www.instagram.com/daksh_adhar/"
+      // "https://www.instagram.com/daksh_adhar/"
     ],
     "knowsAbout": ["Robotics", "Machine Learning", "Software Development", "Autonomous Systems"],
     "alumniOf": "Carnegie Mellon University, Indian INstitute of Technology Guwahati",

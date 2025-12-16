@@ -4,7 +4,7 @@ import {
   IconArrowLeft,
   IconExternal,
   IconGitHub,
-  IconInstagram,
+  // IconInstagram,
   IconLinkedin,
   IconLogo,
   IconTwitter,
@@ -18,8 +18,8 @@ const Icon = ({ name }) => {
       return <IconExternal />;
     case 'GitHub':
       return <IconGitHub />;
-    case 'Instagram':
-      return <IconInstagram />;
+    // case 'Instagram':
+    //   return <IconInstagram />;
     case 'Linkedin':
       return <IconLinkedin />;
     case 'Logo':

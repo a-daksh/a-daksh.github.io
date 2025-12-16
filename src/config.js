@@ -14,10 +14,10 @@ module.exports = {
       name: 'Twitter',
       url: 'https://twitter.com/DakshAdhar',
     },
-    {
-      name: 'Instagram',
-      url: 'https://www.instagram.com/daksh_adhar/',
-    },
+    // {
+    //   name: 'Instagram',
+    //   url: 'https://www.instagram.com/daksh_adhar/',
+    // },
   ],
 
   navLinks: [
