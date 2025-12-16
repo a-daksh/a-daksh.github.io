@@ -69,6 +69,7 @@ const StyledProject = styled.div`
     position: relative;
     grid-column: 1 / 7;
     grid-row: 1 / -1;
+    z-index: 4;
 
     @media (max-width: 1080px) {
       grid-column: 1 / 9;
@@ -203,9 +204,13 @@ const StyledProject = styled.div`
 
     a {
       width: 100%;
+      max-width: 700px;
+      aspect-ratio: 16 / 9;
+      display: block;
       background-color: var(--color-accent);
       border-radius: var(--border-radius);
       vertical-align: middle;
+      overflow: hidden;
 
       &:hover,
       &:focus {
@@ -235,14 +240,14 @@ const StyledProject = styled.div`
     }
 
     .img {
-      max-width: 700px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       border-radius: var(--border-radius);
       transition: var(--transition);
 
       @media (max-width: 768px) {
         object-fit: cover;
-        width: auto;
-        height: 100%;
       }
     }
   }
