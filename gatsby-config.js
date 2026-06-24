@@ -29,12 +29,6 @@ module.exports = {
       }
     },
     {
-      resolve: "gatsby-plugin-google-tagmanager",
-      options: {
-        id: "GTM-T95FWVWP",
-      },
-    },
-    {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: 'DakshAdhar',
