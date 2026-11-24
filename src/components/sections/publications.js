@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
+import { revealConfig } from '@config';
+import { reveal } from '@utils/reveal';
 import { Icon } from '@components/icons';
 
 const StyledPublicationsSection = styled.section`
@@ -86,12 +86,14 @@ const StyledPublication = styled.div`
     color: var(--color-bg-secondary);
     font-size: var(--fz-lg);
     text-align: justify;
+    hyphens: auto;
 
     @media (max-width: 768px) {
       padding: 20px 0;
       background-color: transparent;
       box-shadow: none;
       color: var(--color-text-secondary);
+      text-align: left;
 
       &:hover {
         box-shadow: none;
@@ -117,6 +119,8 @@ const StyledPublication = styled.div`
 
     a {
       ${({ theme }) => theme.mixins.flexCenter};
+      min-width: 44px;
+      min-height: 44px;
 
       &:hover {
         color: var(--color-accent);
@@ -143,34 +147,32 @@ const Publications = () => {
   const data = useStaticQuery(graphql`
     query {
       publications: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/publications/" } }
+        filter: { fileAbsolutePath: { regex: "/content/publications/" } }
         sort: { frontmatter: { date: ASC } }
       ) {
-        edges {
-          node {
-            frontmatter {
-              title
-              authors
-              venue
-              publishDate
-              external
-              linkText
-            }
-            html
+        nodes {
+          id
+          html
+          frontmatter {
+            title
+            authors
+            venue
+            publishDate
+            external
+            linkText
           }
         }
       }
     }
   `);
-
-  const publicationList = data.publications.edges.filter(({ node }) => node);
+  const publications = data.publications.nodes;
 
   const revealTitle = useRef(null);
   const revealPublications = useRef([]);
-  
+
   useEffect(() => {
-    sr.reveal(revealTitle.current, srConfig());
-    revealPublications.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
+    reveal(revealTitle.current, revealConfig());
+    revealPublications.current.forEach((ref, i) => reveal(ref, revealConfig(i * 100)));
   }, []);
 
   return (
@@ -180,32 +182,39 @@ const Publications = () => {
       </h2>
 
       <div>
-        {publicationList &&
-          publicationList.map(({ node }, i) => {
-            const { frontmatter, html } = node;
-            const { title, authors, venue, publishDate, type, external, linkText } = frontmatter;
+        {publications.map(({ id, frontmatter, html }, i) => {
+          const { title, authors, venue, publishDate, external, linkText } = frontmatter;
 
-            return (
-              <StyledPublication key={i} ref={el => (revealPublications.current[i] = el)}>
-                <div className="publication-content">
-                  <p className="publication-overline">{type}</p>
-                  <h3 className="publication-title">{title}</h3>
-                  <p className="publication-authors">{authors}</p>
-                  <p className="publication-venue">{venue} • {publishDate}</p>
-                  <div className="publication-description-wrapper">
-                    <div className="publication-description" dangerouslySetInnerHTML={{ __html: html }} />
-                    <div className="publication-links">
-                      {external && (
-                        <a href={external} target="_blank" rel="noopener noreferrer" aria-label="Publication Link" className="external">
-                          <Icon name="External" />
-                        </a>
-                      )}
-                    </div>
+          return (
+            <StyledPublication key={id} ref={el => (revealPublications.current[i] = el)}>
+              <div className="publication-content">
+                <h3 className="publication-title">{title}</h3>
+                <p className="publication-authors">{authors}</p>
+                <p className="publication-venue">
+                  {venue} • {publishDate}
+                </p>
+                <div className="publication-description-wrapper">
+                  <div
+                    className="publication-description"
+                    dangerouslySetInnerHTML={{ __html: html }}
+                  />
+                  <div className="publication-links">
+                    {external && (
+                      <a
+                        href={external}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Read "${title}" on ${linkText || 'the publisher site'}`}
+                        className="external">
+                        <Icon name="External" />
+                      </a>
+                    )}
                   </div>
                 </div>
-              </StyledPublication>
-            );
-          })}
+              </div>
+            </StyledPublication>
+          );
+        })}
       </div>
     </StyledPublicationsSection>
   );

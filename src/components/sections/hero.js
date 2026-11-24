@@ -1,16 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { email } from '@config';
-import { navDelay, loaderDelay } from '@utils';
+import { usePrefersReducedMotion } from '@hooks';
+import HeroRobot from '../heroRobot';
+
+// From this width the headline and the 3D robot sit side by side; below it they stack.
+const SIDE_BY_SIDE_BP = 1440;
+
+const WORDS = ['Robots.', 'cool stuff.'];
+const LONGEST_WORD = WORDS.reduce((a, b) => (b.length > a.length ? b : a));
 
 const StyledHeroSection = styled.section`
-  ${({ theme }) => theme.mixins.flexCenter};
+  display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  min-height: 100vh;
+  justify-content: center;
+  min-height: var(--full-height);
+  padding-top: var(--nav-height);
 
-  p {
+  @media (min-width: ${SIDE_BY_SIDE_BP}px) {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    column-gap: 40px;
+    max-width: none;
+    /* Start the text on the same left edge as the 1000px section column below. */
+    padding-left: max(0px, calc((100% - 1000px) / 2));
+  }
+
+  .hero-text {
+    position: relative;
+    z-index: 2;
+  }
+
+  .greeting {
     margin: 0 0 30px 4px;
     color: var(--color-accent);
     font-family: var(--font-mono);
@@ -34,89 +55,104 @@ const StyledHeroSection = styled.section`
     line-height: 0.9;
   }
 
-  p {
-    margin: 20px 0 0;
-    max-width: 500px;
-  }
-
-  .email-link {
-    ${({ theme }) => theme.mixins.bigButton};
-    margin-top: 50px;
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
+  /* The typed word sits in a slot already as wide as the longest word, so typing never
+     re-wraps the line or moves the robot below it. */
   .typewriter {
-    display: inline-block;
-    border-right: 2px solid var(--color-accent);
-    animation: blink 1s infinite;
+    display: inline-grid;
+
+    > span {
+      grid-area: 1 / 1;
+      white-space: nowrap;
+    }
+    .sizer {
+      visibility: hidden;
+    }
+    .typed {
+      justify-self: start;
+      border-right: 2px solid var(--color-accent);
+      animation: blink 1s step-end infinite;
+    }
   }
 
   @keyframes blink {
-    0%, 50% { border-color: var(--color-accent); }
-    51%, 100% { border-color: transparent; }
+    50% {
+      border-color: transparent;
+    }
+  }
+
+  .hero-stage {
+    width: 100%;
+    height: min(46vh, 480px);
+    margin-top: 24px;
+
+    @media (min-width: ${SIDE_BY_SIDE_BP}px) {
+      height: min(72vh, 680px);
+      margin-top: 0;
+      margin-right: -70px;
+      width: calc(100% + 70px);
+    }
   }
 `;
 
+/** Types and deletes WORDS in a loop, starting with the first word already shown. */
+const useTypewriter = enabled => {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [text, setText] = useState(WORDS[0]);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    const word = WORDS[wordIndex];
+    let delay = deleting ? 50 : 100;
+    let step;
+
+    if (!deleting && text === word) {
+      delay = 2500; // hold the full word
+      step = () => setDeleting(true);
+    } else if (deleting && text === '') {
+      step = () => {
+        setDeleting(false);
+        setWordIndex((wordIndex + 1) % WORDS.length);
+      };
+    } else {
+      step = () => setText(deleting ? text.slice(0, -1) : word.slice(0, text.length + 1));
+    }
+
+    const timer = setTimeout(step, delay);
+    return () => clearTimeout(timer);
+  }, [enabled, text, deleting, wordIndex]);
+
+  return text;
+};
+
 const Hero = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [currentText, setCurrentText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const words = ['Robots.', 'cool stuff.'];
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setIsMounted(true), navDelay);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted) return;
-
-    const typeSpeed = isDeleting ? 50 : 100;
-    const currentWord = words[currentWordIndex];
-
-    const timeout = setTimeout(() => {
-      if (!isDeleting && currentText === currentWord) {
-        // Finished typing, wait then start deleting
-        setTimeout(() => setIsDeleting(true), 2500);
-      } else if (isDeleting && currentText === '') {
-        // Finished deleting, move to next word
-        setIsDeleting(false);
-        setCurrentWordIndex((prev) => (prev + 1) % words.length);
-      } else {
-        // Continue typing or deleting
-        setCurrentText(prev =>
-          isDeleting
-            ? prev.slice(0, -1)
-            : currentWord.slice(0, prev.length + 1)
-        );
-      }
-    }, typeSpeed);
-
-    return () => clearTimeout(timeout);
-  }, [currentText, isDeleting, currentWordIndex, isMounted, words]);
-
-  const one = <p>Hi, my name is</p>;
-  const two = <h1 className="big-heading">Daksh Adhar</h1>;
-  const three = (
-    <h2 className="big-heading">
-      I like building <span className="typewriter">{currentText}</span>
-    </h2>
-  );
-
-  const items = [one, two, three];
+  const reducedMotion = usePrefersReducedMotion();
+  const typed = useTypewriter(!reducedMotion);
 
   return (
-    <StyledHeroSection>
-      <TransitionGroup component={null}>
-        {isMounted &&
-          items.map((item, i) => (
-            <CSSTransition key={i} classNames="fadeup" timeout={loaderDelay}>
-              <div style={{ transitionDelay: `${i + 1}00ms` }}>{item}</div>
-            </CSSTransition>
-          ))}
-      </TransitionGroup>
+    <StyledHeroSection id="top">
+      <div className="hero-text">
+        <p className="greeting intro-up" style={{ '--intro-delay': '100ms' }}>
+          Hi, my name is
+        </p>
+        <h1 className="big-heading intro-up" style={{ '--intro-delay': '200ms' }}>
+          Daksh Adhar
+        </h1>
+        <h2 className="big-heading intro-up" style={{ '--intro-delay': '300ms' }}>
+          I like building{' '}
+          <span className="typewriter" aria-hidden="true">
+            <span className="sizer">{LONGEST_WORD}</span>
+            <span className="typed">{typed}</span>
+          </span>
+          <span className="sr-only">robots and cool stuff.</span>
+        </h2>
+      </div>
+
+      <div className="hero-stage">
+        <HeroRobot />
+      </div>
     </StyledHeroSection>
   );
 };

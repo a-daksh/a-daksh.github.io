@@ -43,36 +43,47 @@ const StyledCredit = styled.div`
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
   font-size: var(--fz-xxs);
-  line-height: 1;
+  line-height: 1.6;
+
+  p {
+    margin: 0;
+  }
 
   a {
-    padding: 10px;
+    color: inherit;
+    display: inline-block;
+    padding: 10px 4px;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+    }
   }
 `;
 
-const Footer = () => {
-  return (
-    <StyledFooter>
-      <StyledSocialLinks>
-        <ul>
-          {socialMedia &&
-            socialMedia.map(({ name, url }, i) => (
-              <li key={i}>
-                <a href={url} aria-label={name}>
-                  <Icon name={name} />
-                </a>
-              </li>
-            ))}
-        </ul>
-      </StyledSocialLinks>
+const Footer = () => (
+  <StyledFooter>
+    <StyledSocialLinks>
+      <ul>
+        {socialMedia.map(({ name, url }) => (
+          <li key={name}>
+            <a href={url} aria-label={name} target="_blank" rel="noopener noreferrer">
+              <Icon name={name} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </StyledSocialLinks>
 
-      <StyledCredit tabindex="-1">
-        <a href="https://github.com/bchiang7/v4">
-          <div>Template courtesy of Brittany Chiang.</div>
+    <StyledCredit>
+      {/* Licence notices for the 3D hero's robot models ship next to them in static/dexterlab/. */}
+      <p>
+        <a href="https://github.com/bchiang7/v4" target="_blank" rel="noopener noreferrer">
+          Template courtesy of Brittany Chiang.
         </a>
-      </StyledCredit>
-    </StyledFooter>
-  );
-};
+      </p>
+    </StyledCredit>
+  </StyledFooter>
+);
 
 export default Footer;

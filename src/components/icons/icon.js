@@ -1,34 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  IconArrowLeft,
-  IconExternal,
-  IconGitHub,
-  // IconInstagram,
-  IconLinkedin,
-  IconLogo,
-  IconTwitter,
-} from '@components/icons';
+import IconArrowLeft from './arrowLeft';
+import IconExternal from './external';
+import IconGitHub from './github';
+import IconInstagram from './instagram';
+import IconLinkedin from './linkedin';
+import IconLogo from './logo';
+import IconTwitter from './twitter';
 
+const ICONS = {
+  ArrowLeft: IconArrowLeft,
+  External: IconExternal,
+  GitHub: IconGitHub,
+  Instagram: IconInstagram,
+  Linkedin: IconLinkedin,
+  Logo: IconLogo,
+  Twitter: IconTwitter,
+};
+
+/** Renders an icon by name; unknown names fall back to the external-link icon. */
 const Icon = ({ name }) => {
-  switch (name) {
-    case 'ArrowLeft':
-      return <IconArrowLeft />;
-    case 'External':
-      return <IconExternal />;
-    case 'GitHub':
-      return <IconGitHub />;
-    // case 'Instagram':
-    //   return <IconInstagram />;
-    case 'Linkedin':
-      return <IconLinkedin />;
-    case 'Logo':
-      return <IconLogo />;
-    case 'Twitter':
-      return <IconTwitter />;
-    default:
-      return <IconExternal />;
-  }
+  const Component = ICONS[name] || IconExternal;
+  return <Component />;
 };
 
 Icon.propTypes = {

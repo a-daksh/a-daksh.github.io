@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react';
 
-const useBeepDetection = (callback) => {
+const useBeepDetection = callback => {
   const [keySequence, setKeySequence] = useState('');
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
+    const handleKeyPress = event => {
       // Only track letter keys, ignore special keys
       if (event.key.length === 1 && event.key.match(/[a-zA-Z]/)) {
         setKeySequence(prev => {
           const newSequence = (prev + event.key.toLowerCase()).slice(-4); // Keep last 4 characters
-          
+
           if (newSequence === 'beep') {
             callback();
             return ''; // Reset after triggering
           }
-          
+
           return newSequence;
         });
       }

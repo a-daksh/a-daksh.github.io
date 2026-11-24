@@ -1,9 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Layout, Hero, About, News, Jobs, Featured, Contact } from '@components';
-import Skills from '../components/sections/skills';
-import Publications from '../components/sections/publications';
+import {
+  Layout,
+  Seo,
+  Hero,
+  About,
+  News,
+  Jobs,
+  Skills,
+  Featured,
+  Publications,
+  Contact,
+} from '@components';
 
 const StyledMainContainer = styled.main`
   counter-reset: section;
@@ -26,6 +35,12 @@ const IndexPage = ({ location }) => (
 
 IndexPage.propTypes = {
   location: PropTypes.object.isRequired,
+};
+
+export const Head = ({ location }) => <Seo pathname={location.pathname} />;
+
+Head.propTypes = {
+  location: PropTypes.shape({ pathname: PropTypes.string.isRequired }).isRequired,
 };
 
 export default IndexPage;

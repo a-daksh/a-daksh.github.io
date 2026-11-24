@@ -1,24 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'gatsby';
-import { Helmet } from 'react-helmet';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
-import styled, { ThemeProvider } from 'styled-components';
-import { navDelay } from '@utils';
-import { Head, Nav } from '@components';
-import { GlobalStyle, theme } from '@styles';
-import { ThemeProvider as CustomThemeProvider } from '../contexts/ThemeContext';
-
-const StyledContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-`;
+import styled from 'styled-components';
+import { Layout, Seo } from '@components';
 
 const StyledMainContainer = styled.main`
   ${({ theme }) => theme.mixins.flexCenter};
   flex-direction: column;
   flex: 1;
+  min-height: var(--full-height);
 `;
 
 const StyledTitle = styled.h1`
@@ -33,49 +23,29 @@ const StyledSubtitle = styled.h2`
   font-weight: 400;
 `;
 
-const StyledRetryButton = styled(Link)`
+const StyledHomeButton = styled(Link)`
   ${({ theme }) => theme.mixins.bigButton};
   margin-top: 40px;
 `;
 
-const NotFoundPage = ({ location }) => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setIsMounted(true), navDelay);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  return (
-    <>
-      <Head />
-      <div id="root">
-        <CustomThemeProvider>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <StyledContent>
-              <Nav isHome={false} />
-              <TransitionGroup component={null}>
-                {isMounted && (
-                  <CSSTransition timeout={500} classNames="fadeup">
-                    <StyledMainContainer className="fillHeight">
-                      <StyledTitle>404</StyledTitle>
-                      <StyledSubtitle>Page Not Found</StyledSubtitle>
-                      <StyledRetryButton to="/">Retry</StyledRetryButton>
-                    </StyledMainContainer>
-                  </CSSTransition>
-                )}
-              </TransitionGroup>
-            </StyledContent>
-          </ThemeProvider>
-        </CustomThemeProvider>
-      </div>
-    </>
-  );
-};
+const NotFoundPage = ({ location }) => (
+  <Layout location={location}>
+    <StyledMainContainer className="fillHeight intro-up">
+      <StyledTitle>404</StyledTitle>
+      <StyledSubtitle>Page Not Found</StyledSubtitle>
+      <StyledHomeButton to="/">Back home</StyledHomeButton>
+    </StyledMainContainer>
+  </Layout>
+);
 
 NotFoundPage.propTypes = {
   location: PropTypes.object.isRequired,
+};
+
+export const Head = ({ location }) => <Seo pathname={location.pathname} title="Page Not Found" />;
+
+Head.propTypes = {
+  location: PropTypes.shape({ pathname: PropTypes.string.isRequired }).isRequired,
 };
 
 export default NotFoundPage;

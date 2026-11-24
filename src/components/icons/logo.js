@@ -1,31 +1,39 @@
 import React from 'react';
-import owlLogo from '../../images/owl_logo.svg';
+
+// "DA" monogram (option C: outlined tile, mono font). Colors follow the theme variables.
+// Border width matches the letter stem width: SF Mono semibold stems are ~0.117 em -> 0.117 * 15 = 1.75.
+const STEM = 1.75;
 
 const IconLogo = () => (
-//   <svg id="logo" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 100 100">
-//   <title>Logo</title>
-//   <g transform="translate(5.000000, 5.000000)">
-//     <g>
-//       <polyline
-//         id="letter"
-//         stroke="currentColor"
-//         strokeWidth="5"
-//         strokeLinecap="round"
-//         strokeLinejoin="round"
-//         points="22.5 30 22.5 22.5 67.5 22.5 67.5 30 67.5 22.5 45 22.5 45 67.5 37.5 67.5 52.5 67.5"
-//       />
-//       <polygon
-//         id="Shape"
-//         stroke="currentColor"
-//         strokeWidth="5"
-//         strokeLinecap="round"
-//         strokeLinejoin="round"
-//         points="0 0 0 90 90 90 90 0 0 0"
-//       />
-//     </g>
-//   </g>
-// </svg>
-  <img src={owlLogo} alt="Owl Logo" style={{ width: '40px', height: 'auto' }} />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 40 40"
+    width="40"
+    height="40"
+    role="img"
+    aria-label="Daksh Adhar">
+    <title>Daksh Adhar</title>
+    <rect
+      x={1 + STEM / 2}
+      y={1 + STEM / 2}
+      width={38 - STEM}
+      height={38 - STEM}
+      rx="8"
+      style={{ fill: 'none', stroke: 'var(--color-text-primary)', strokeWidth: STEM }}
+    />
+    <text
+      x="20"
+      y="20.6"
+      textAnchor="middle"
+      dominantBaseline="central"
+      style={{
+        fill: 'var(--color-text-primary)',
+        font: '600 15px "SF Mono", monospace',
+        letterSpacing: '-0.4px',
+      }}>
+      DA
+    </text>
+  </svg>
 );
 
 export default IconLogo;

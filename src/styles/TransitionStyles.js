@@ -1,48 +1,66 @@
 import { css } from 'styled-components';
 
-// https://reactcommunity.org/react-transition-group/css-transition
-
+/*
+ * Intro animations, CSS only. Content is server-rendered and visible to crawlers and screen readers
+ * from the start; these classes just fade it in on first paint. Stagger items with the
+ * --intro-delay custom property, e.g. style={{ '--intro-delay': '300ms' }}.
+ */
 const TransitionStyles = css`
-  /* Fade up */
-  .fadeup-enter {
-    opacity: 0.01;
-    transform: translateY(20px);
-    transition: opacity 300ms var(--easing), transform 300ms var(--easing);
+  @keyframes intro-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
-  .fadeup-enter-active {
-    opacity: 1;
-    transform: translateY(0px);
-    transition: opacity 300ms var(--easing), transform 300ms var(--easing);
+  @keyframes intro-down {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
-  /* Fade down */
-  .fadedown-enter {
-    opacity: 0.01;
-    transform: translateY(-20px);
-    transition: opacity 300ms var(--easing), transform 300ms var(--easing);
+  @keyframes intro-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
-  .fadedown-enter-active {
-    opacity: 1;
-    transform: translateY(0px);
-    transition: opacity 300ms var(--easing), transform 300ms var(--easing);
+  .intro-up,
+  .intro-down,
+  .intro-fade {
+    animation-duration: 400ms;
+    animation-timing-function: var(--easing);
+    animation-fill-mode: both;
+    animation-delay: var(--intro-delay, 0ms);
+  }
+  .intro-up {
+    animation-name: intro-up;
+  }
+  .intro-down {
+    animation-name: intro-down;
+  }
+  .intro-fade {
+    animation-name: intro-fade;
   }
 
-  /* Fade */
-  .fade-enter {
-    opacity: 0;
-  }
-  .fade-enter-active {
-    opacity: 1;
-    transition: opacity 300ms var(--easing);
-  }
-  .fade-exit {
-    opacity: 1;
-  }
-  .fade-exit-active {
-    opacity: 0;
-    transition: opacity 300ms var(--easing);
+  @media (prefers-reduced-motion: reduce) {
+    .intro-up,
+    .intro-down,
+    .intro-fade {
+      animation: none;
+    }
   }
 `;
 

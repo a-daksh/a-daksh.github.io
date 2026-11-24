@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { srConfig, email } from '@config';
-import sr from '@utils/sr';
+import { revealConfig } from '@config';
+import { openEmail } from '@utils/email';
+import { reveal } from '@utils/reveal';
 
 const StyledContactSection = styled.section`
   max-width: 600px;
@@ -36,26 +37,25 @@ const StyledContactSection = styled.section`
 
   .email-link {
     ${({ theme }) => theme.mixins.bigButton};
+    display: inline-block;
     margin-top: 50px;
   }
 `;
 
 const Contact = () => {
   const revealContainer = useRef(null);
-  useEffect(() => sr.reveal(revealContainer.current, srConfig()), []);
+  useEffect(() => reveal(revealContainer.current, revealConfig()), []);
 
   return (
     <StyledContactSection id="contact" ref={revealContainer}>
-
       <h2 className="title">Get In Touch</h2>
 
-      <p>
-        Whether you have a question or just want to say hi! My inbox is always open.
-      </p>
+      <p>Whether you have a question or just want to say hi! My inbox is always open.</p>
 
-      <a className="email-link" href={`mailto:${email}`}>
+      {/* The mailto: link is built only on click, so the address isn't in the HTML (src/utils/email.js). */}
+      <button type="button" className="email-link" onClick={openEmail}>
         Say Hello
-      </a>
+      </button>
     </StyledContactSection>
   );
 };

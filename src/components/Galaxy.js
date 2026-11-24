@@ -1,16 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 const GalaxyOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: #020c1b; /* Dark navy from website theme */
   z-index: 9999;
   overflow: hidden;
-  
+
   /* Simple blur overlay */
   &::before {
     content: '';
@@ -37,7 +35,7 @@ const CloseButton = styled.button`
   top: 20px;
   right: 20px;
   background: rgba(0, 0, 0, 0.8); /* Navy background */
-  border: 1px solid #fff  ; /* Teal accent border */
+  border: 1px solid #fff; /* Teal accent border */
   color: #fff; /* Teal accent text */
   padding: 10px 15px;
   font-family: 'Courier New', monospace;
@@ -45,7 +43,7 @@ const CloseButton = styled.button`
   z-index: 10002;
   border-radius: 4px;
   transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-  
+
   &:hover {
     background: rgba(100, 255, 218, 0.1); /* Teal tint on hover */
     transform: translateY(-2px);
@@ -61,7 +59,7 @@ const Galaxy = ({ onClose }) => {
 
   // ESC key detection
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = event => {
       if (event.key === 'Escape') {
         onClose();
       }
@@ -72,40 +70,22 @@ const Galaxy = ({ onClose }) => {
   }, [onClose]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const loadThreeJS = () => {
-      return new Promise((resolve, reject) => {
-        // Check if already loaded
-        if (window.THREE) {
-          resolve();
-          return;
-        }
-
-        // Create script element
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/three@0.132.2/build/three.min.js';
-        script.onload = () => {
-          // Load OrbitControls
-          const controlsScript = document.createElement('script');
-          controlsScript.src = 'https://unpkg.com/three@0.132.2/examples/js/controls/OrbitControls.js';
-          controlsScript.onload = resolve;
-          controlsScript.onerror = reject;
-          document.head.appendChild(controlsScript);
-        };
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    };
+    if (!canvas) {
+      return;
+    }
 
     const initializeGalaxy = async () => {
       try {
-        await loadThreeJS();
-
-        const THREE = window.THREE;
+        // Same bundled three.js as the hero, loaded only when the easter egg is triggered.
+        const [THREE, { OrbitControls }] = await Promise.all([
+          import('three'),
+          import('three/examples/jsm/controls/OrbitControls.js'),
+        ]);
 
         // Scene
         const scene = new THREE.Scene();
@@ -121,7 +101,7 @@ const Galaxy = ({ onClose }) => {
           randomness: 5,
           randomnessPower: 4,
           insideColor: '#ff6030',
-          outsideColor: '#0949f0'
+          outsideColor: '#0949f0',
         };
 
         let material = null;
@@ -140,7 +120,7 @@ const Galaxy = ({ onClose }) => {
             sizeAttenuation: true,
             depthWrite: false,
             blending: THREE.AdditiveBlending,
-            vertexColors: true
+            vertexColors: true,
           });
 
           geometry = new THREE.BufferGeometry();
@@ -151,20 +131,29 @@ const Galaxy = ({ onClose }) => {
 
           for (let i = 0; i < parameters.count; i++) {
             const i3 = i * 3;
-            const radius = Math.pow(Math.random() * parameters.randomness, Math.random() * parameters.radius);
+            const radius = Math.pow(
+              Math.random() * parameters.randomness,
+              Math.random() * parameters.radius,
+            );
             const spinAngle = radius * parameters.spin;
             const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
             const negPos = [1, -1];
-            const randomX = Math.pow(Math.random(), parameters.randomnessPower) * negPos[Math.floor(Math.random() * negPos.length)];
-            const randomY = Math.pow(Math.random(), parameters.randomnessPower) * negPos[Math.floor(Math.random() * negPos.length)];
-            const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * negPos[Math.floor(Math.random() * negPos.length)];
+            const randomX =
+              Math.pow(Math.random(), parameters.randomnessPower) *
+              negPos[Math.floor(Math.random() * negPos.length)];
+            const randomY =
+              Math.pow(Math.random(), parameters.randomnessPower) *
+              negPos[Math.floor(Math.random() * negPos.length)];
+            const randomZ =
+              Math.pow(Math.random(), parameters.randomnessPower) *
+              negPos[Math.floor(Math.random() * negPos.length)];
 
             positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
             positions[i3 + 1] = randomY;
             positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
             const mixedColor = colorInside.clone();
-            mixedColor.lerp(colorOutside, Math.random() * radius / parameters.radius);
+            mixedColor.lerp(colorOutside, (Math.random() * radius) / parameters.radius);
             colors[i3] = mixedColor.r;
             colors[i3 + 1] = mixedColor.g;
             colors[i3 + 2] = mixedColor.b;
@@ -181,24 +170,24 @@ const Galaxy = ({ onClose }) => {
         // Sizes
         const sizes = {
           width: window.innerWidth,
-          height: window.innerHeight
+          height: window.innerHeight,
         };
 
         // Camera
         const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-        camera.position.x = 5;  // Change this value (left/right)
-        camera.position.y = 2;  // Change this value (up/down)
-        camera.position.z = 5;  // Change this value (forward/back)
+        camera.position.x = 5; // Change this value (left/right)
+        camera.position.y = 2; // Change this value (up/down)
+        camera.position.z = 5; // Change this value (forward/back)
         scene.add(camera);
         cameraRef.current = camera;
 
         // Controls
-        const controls = new THREE.OrbitControls(camera, canvas);
+        const controls = new OrbitControls(camera, canvas);
         controls.enableDamping = true;
 
         // Renderer
         const renderer = new THREE.WebGLRenderer({ canvas });
-        renderer.setSize(sizes.width, sizes.height);
+        renderer.setSize(sizes.width, sizes.height, false); // CSS keeps it full-screen
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         rendererRef.current = renderer;
 
@@ -208,7 +197,7 @@ const Galaxy = ({ onClose }) => {
           sizes.height = window.innerHeight;
           camera.aspect = sizes.width / sizes.height;
           camera.updateProjectionMatrix();
-          renderer.setSize(sizes.width, sizes.height);
+          renderer.setSize(sizes.width, sizes.height, false); // CSS keeps it full-screen
           renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         };
 
@@ -239,11 +228,16 @@ const Galaxy = ({ onClose }) => {
           if (animationIdRef.current) {
             window.cancelAnimationFrame(animationIdRef.current);
           }
-          if (geometry) geometry.dispose();
-          if (material) material.dispose();
-          if (renderer) renderer.dispose();
+          if (geometry) {
+            geometry.dispose();
+          }
+          if (material) {
+            material.dispose();
+          }
+          if (renderer) {
+            renderer.dispose();
+          }
         };
-
       } catch (error) {
         console.error('Failed to load Three.js:', error);
       }
@@ -268,6 +262,10 @@ const Galaxy = ({ onClose }) => {
       <GalaxyCanvas ref={canvasRef} className="webgl" />
     </GalaxyOverlay>
   );
+};
+
+Galaxy.propTypes = {
+  onClose: PropTypes.func.isRequired,
 };
 
 export default Galaxy;

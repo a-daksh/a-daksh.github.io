@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
-import { srConfig } from '@config';
+import { revealConfig } from '@config';
 import { KEY_CODES } from '@utils';
-import sr from '@utils/sr';
+import { reveal } from '@utils/reveal';
 
 const StyledJobsSection = styled.section`
-  max-width: 700px;
-
+  /* Shares the 1000px section column (same left edge as the other sections);
+     the tabs + panel keep a readable width. */
   .inner {
     display: flex;
+    max-width: 850px;
 
     @media (max-width: 600px) {
       display: block;
@@ -18,26 +18,20 @@ const StyledJobsSection = styled.section`
   }
 `;
 
-const StyledTabList = styled.ul`
+const StyledTabs = styled.div`
   position: relative;
   z-index: 3;
   width: max-content;
-  padding: 0;
-  margin: 0;
-  list-style: none;
+  flex-shrink: 0;
 
   @media (max-width: 600px) {
-    display: flex;
-    overflow-x: auto;
     width: calc(100% + 100px);
     margin-left: -50px;
     margin-bottom: 30px;
-    
-    /* Hide scrollbar */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
+    overflow-x: auto;
+    scrollbar-width: none;
     &::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera */
+      display: none;
     }
   }
   @media (max-width: 480px) {
@@ -45,22 +39,17 @@ const StyledTabList = styled.ul`
     margin-left: -25px;
   }
 
-  li {
-    &:first-of-type {
-      @media (max-width: 600px) {
-        margin-left: 50px;
-      }
-      @media (max-width: 480px) {
-        margin-left: 25px;
-      }
+  [role='tablist'] {
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 600px) {
+      flex-direction: row;
+      padding: 0 50px;
+      width: max-content;
     }
-    &:last-of-type {
-      @media (max-width: 600px) {
-        padding-right: 50px;
-      }
-      @media (max-width: 480px) {
-        padding-right: 25px;
-      }
+    @media (max-width: 480px) {
+      padding: 0 25px;
     }
   }
 `;
@@ -72,9 +61,11 @@ const StyledTabButton = styled.button`
   width: 100%;
   height: var(--tab-height);
   padding: 0 20px 2px;
-  border-left: 2px solid var(--color-bg-tertiary);
-  background-color: rgba(var(--color-bg-primary-rgb), 0.85);
-  color: ${({ isActive }) => (isActive ? 'var(--color-accent)' : 'var(--color-bg-secondary)')};
+  border: 0;
+  border-left: 2px solid var(--color-accent-tint);
+  background-color: ${({ $active }) => ($active ? 'var(--color-accent-tint)' : 'transparent')};
+  color: ${({ $active }) =>
+    $active ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'};
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
   text-align: left;
@@ -88,16 +79,17 @@ const StyledTabButton = styled.button`
     min-width: 120px;
     padding: 0 15px;
     border-left: 0;
-    border-bottom: 2px solid var(--color-bg-tertiary);
+    border-bottom: 2px solid var(--color-accent-tint);
     text-align: center;
   }
 
-  &:hover,
-  &:focus {
-    background-color: rgba(var(--color-bg-primary-rgb), 0.95);
+  &:hover {
+    background-color: var(--color-accent-tint);
+    color: var(--color-text-primary);
   }
 `;
 
+// Accent bar marking the active tab (vertical on desktop, horizontal on mobile).
 const StyledHighlight = styled.div`
   position: absolute;
   top: 0;
@@ -107,27 +99,23 @@ const StyledHighlight = styled.div`
   height: var(--tab-height);
   border-radius: var(--border-radius);
   background: var(--color-accent);
-  transform: translateY(calc(${({ activeTabId }) => activeTabId} * var(--tab-height)));
-  transition: transform 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transition-delay: 0.1s;
+  transform: translateY(calc(${({ $index }) => $index} * var(--tab-height)));
+  transition: transform 0.25s var(--easing) 0.1s;
 
   @media (max-width: 600px) {
     top: auto;
     bottom: 0;
-    left: 50px;
     width: var(--highlight-width, 120px);
     height: 2px;
-    margin-left: 0;
     transform: translateX(var(--highlight-offset, 0px));
-  }
-  @media (max-width: 480px) {
-    left: 25px;
   }
 `;
 
-const StyledTabContent = styled.div`
+// All panels share one grid cell, so the section keeps the height of the tallest job
+// and the content below doesn't jump when switching tabs.
+const StyledPanels = styled.div`
+  display: grid;
   width: 100%;
-  height: auto;
   padding-top: 10px;
   padding-left: 30px;
 
@@ -137,6 +125,11 @@ const StyledTabContent = styled.div`
   @media (max-width: 600px) {
     padding-left: 0;
   }
+`;
+
+const StyledPanel = styled.div`
+  grid-area: 1 / 1;
+  visibility: ${({ $active }) => ($active ? 'visible' : 'hidden')};
 
   ul {
     ${({ theme }) => theme.mixins.fancyList};
@@ -149,158 +142,137 @@ const StyledTabContent = styled.div`
 
     .company {
       color: var(--color-accent);
-      
+
       a {
-        text-decoration: underline;
+        ${({ theme }) => theme.mixins.inlineLink};
       }
     }
   }
 
   .range {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     color: var(--color-text-secondary);
     font-family: var(--font-mono);
     font-size: var(--fz-xs);
   }
+
+  /* Company blurb before the bullet list */
+  .job-description > p {
+    margin-bottom: 20px;
+    font-size: var(--fz-md);
+  }
 `;
 
+// "Where I've Worked". Content: content/jobs/<Company>/index.md (newest `date` first).
 const Jobs = () => {
   const data = useStaticQuery(graphql`
     query {
       jobs: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/jobs/" } }
-        sort: { frontmatter: {date: DESC } }
+        filter: { fileAbsolutePath: { regex: "/content/jobs/" } }
+        sort: { frontmatter: { date: DESC } }
       ) {
-        edges {
-          node {
-            frontmatter {
-              title
-              company
-              location
-              range
-              url
-            }
-            html
+        nodes {
+          id
+          html
+          frontmatter {
+            title
+            company
+            location
+            range
+            url
           }
         }
       }
     }
   `);
+  const jobs = data.jobs.nodes;
 
-  const jobsData = data.jobs.edges;
-
-  const [activeTabId, setActiveTabId] = useState(0);
-  const [tabFocus, setTabFocus] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const tabs = useRef([]);
   const highlightRef = useRef(null);
-
   const revealContainer = useRef(null);
-  useEffect(() => sr.reveal(revealContainer.current, srConfig()), []);
 
-  // Update highlight position and width on mobile
+  useEffect(() => reveal(revealContainer.current, revealConfig()), []);
+
+  // On mobile the tabs scroll horizontally: size and place the highlight under the active tab.
   useEffect(() => {
-    if (highlightRef.current && tabs.current[activeTabId] && window.innerWidth <= 600) {
-      const activeTab = tabs.current[activeTabId];
-      const width = activeTab.getBoundingClientRect().width;
-      const offset = activeTab.offsetLeft - (window.innerWidth <= 480 ? 25 : 50);
-
-      highlightRef.current.style.setProperty('--highlight-width', `${width}px`);
-      highlightRef.current.style.setProperty('--highlight-offset', `${offset}px`);
+    const tab = tabs.current[activeIndex];
+    if (highlightRef.current && tab) {
+      highlightRef.current.style.setProperty('--highlight-width', `${tab.offsetWidth}px`);
+      highlightRef.current.style.setProperty('--highlight-offset', `${tab.offsetLeft}px`);
     }
-  }, [activeTabId]);
+  }, [activeIndex]);
 
-  const focusTab = () => {
-    if (tabs.current[tabFocus]) {
-      tabs.current[tabFocus].focus();
+  // Arrow keys move between tabs (WAI-ARIA tabs pattern, activation follows focus).
+  const onKeyDown = e => {
+    const prev = [KEY_CODES.ARROW_UP, KEY_CODES.ARROW_LEFT].includes(e.key);
+    const next = [KEY_CODES.ARROW_DOWN, KEY_CODES.ARROW_RIGHT].includes(e.key);
+    if (!prev && !next) {
       return;
     }
-    // If we're at the end, go to the start
-    if (tabFocus >= tabs.current.length) {
-      setTabFocus(0);
-    }
-    // If we're at the start, move to the end
-    if (tabFocus < 0) {
-      setTabFocus(tabs.current.length - 1);
-    }
-  };
-
-  // Only re-run the effect if tabFocus changes
-  useEffect(() => focusTab(), [tabFocus]);
-
-  // Focus on tabs when using up & down arrow keys
-  const onKeyDown = e => {
-    if (e.key === KEY_CODES.ARROW_UP || e.key === KEY_CODES.ARROW_DOWN) {
-      e.preventDefault();
-      // Move up
-      if (e.key === KEY_CODES.ARROW_UP) {
-        setTabFocus(tabFocus - 1);
-      }
-      // Move down
-      if (e.key === KEY_CODES.ARROW_DOWN) {
-        setTabFocus(tabFocus + 1);
-      }
-    }
+    e.preventDefault();
+    const index = (activeIndex + (next ? 1 : -1) + jobs.length) % jobs.length;
+    setActiveIndex(index);
+    tabs.current[index].focus();
   };
 
   return (
     <StyledJobsSection id="jobs" ref={revealContainer}>
-      <h2 className="numbered-heading">Where I've Worked</h2>
+      <h2 className="numbered-heading">Where I&apos;ve Worked</h2>
 
       <div className="inner">
-        <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={onKeyDown}>
-          {jobsData &&
-            jobsData.map(({ node }, i) => {
-              const { company } = node.frontmatter;
-              return (
-                <li key={i}>
-                  <StyledTabButton
-                    isActive={activeTabId === i}
-                    onClick={() => setActiveTabId(i)}
-                    ref={el => (tabs.current[i] = el)}
-                    id={`tab-${i}`}
-                    role="tab"
-                    aria-selected={activeTabId === i ? true : false}
-                    aria-controls={`panel-${i}`}
-                    tabIndex={activeTabId === i ? '0' : '-1'}>
-                    <span>{company}</span>
-                  </StyledTabButton>
-                </li>
-              );
-            })}
-          <StyledHighlight activeTabId={activeTabId} ref={highlightRef} />
-        </StyledTabList>
+        <StyledTabs>
+          <div role="tablist" aria-label="Jobs">
+            {jobs.map(({ id, frontmatter: { company } }, i) => (
+              <StyledTabButton
+                key={id}
+                ref={el => (tabs.current[i] = el)}
+                id={`tab-${i}`}
+                role="tab"
+                aria-selected={activeIndex === i}
+                aria-controls={`panel-${i}`}
+                tabIndex={activeIndex === i ? 0 : -1}
+                $active={activeIndex === i}
+                onClick={() => setActiveIndex(i)}
+                onKeyDown={onKeyDown}>
+                {company}
+              </StyledTabButton>
+            ))}
+          </div>
+          <StyledHighlight ref={highlightRef} $index={activeIndex} aria-hidden="true" />
+        </StyledTabs>
 
-        {jobsData &&
-          jobsData.map(({ node }, i) => {
-            const { frontmatter, html } = node;
-            const { title, url, company, range } = frontmatter;
+        <StyledPanels>
+          {jobs.map(({ id, html, frontmatter: { title, url, company, range } }, i) => (
+            <StyledPanel
+              key={id}
+              id={`panel-${i}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${i}`}
+              aria-hidden={activeIndex !== i}
+              tabIndex={activeIndex === i ? 0 : -1}
+              className={activeIndex === i ? 'intro-fade' : undefined}
+              $active={activeIndex === i}>
+              <h3>
+                <span>{title}</span>
+                <span className="company">
+                  &nbsp;@&nbsp;
+                  {url ? (
+                    <a href={url} target="_blank" rel="noopener noreferrer">
+                      {company}
+                    </a>
+                  ) : (
+                    company
+                  )}
+                </span>
+              </h3>
 
-            return (
-              <CSSTransition key={i} in={activeTabId === i} timeout={250} classNames="fade">
-                <StyledTabContent
-                  id={`panel-${i}`}
-                  role="tabpanel"
-                  tabIndex={activeTabId === i ? '0' : '-1'}
-                  aria-labelledby={`tab-${i}`}
-                  aria-hidden={activeTabId !== i}
-                  hidden={activeTabId !== i}>
-                  <h3>
-                    <span>{title}</span>
-                    <span className="company">
-                      &nbsp;@&nbsp;
-                      <a href={url} className="inline-link">
-                        {company}
-                      </a>
-                    </span>
-                  </h3>
+              <p className="range">{range}</p>
 
-                  <p className="range">{range}</p>
-
-                  <div dangerouslySetInnerHTML={{ __html: html }} />
-                </StyledTabContent>
-              </CSSTransition>
-            );
-          })}
+              <div className="job-description" dangerouslySetInnerHTML={{ __html: html }} />
+            </StyledPanel>
+          ))}
+        </StyledPanels>
       </div>
     </StyledJobsSection>
   );

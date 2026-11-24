@@ -1,33 +1,36 @@
 import { createGlobalStyle } from 'styled-components';
+import bgDark from '@images/bg-dark.webp';
+import bgLight from '@images/bg-light.webp';
 import Fonts from './fonts';
 import TransitionStyles from './TransitionStyles';
-import PrismStyles from './PrismStyles';
 
+/*
+ * Theme colours live here as CSS variables. Dark is the default; the light palette applies when
+ * <html data-theme="light"> is set. gatsby-ssr.js sets that attribute before first paint (from the
+ * visitor's saved choice), and ThemeContext flips it when the toggle is used.
+ */
 const GlobalStyle = createGlobalStyle`
   ${Fonts};
 
   :root {
-    /* Color Hunt Palette */
-    --color-bg-primary: #1E201E;      /* main background */
+    color-scheme: dark;
+
+    --color-bg-primary: #1E201E;      /* page background */
     --color-bg-primary-rgb: 30, 32, 30;
-    --color-bg-secondary: #ECDFCC;    /* cards, panels now creamish */
-    --color-bg-tertiary: #ECDFCC;     /* lines, subtle backgrounds now creamish */
+    --color-bg-secondary: #ECDFCC;    /* cards, panels */
+    --color-bg-tertiary: #ECDFCC;     /* lines, subtle backgrounds */
 
     --color-shadow: rgba(30, 32, 30, 0.7);
 
-    --color-accent: #fff;             /* accent color now white */
+    --color-accent: #fff;
     --color-accent-tint: rgba(255, 255, 255, 0.1);
 
-    --color-text-primary: #fff;       /* main text now white */
-    --color-text-secondary: #ECDFCC;  /* secondary text now creamish */
-    --color-text-tertiary: #ECDFCC;   /* tertiary text now creamish */
-    --color-text-inverse: #1E201E;    /* for light backgrounds */
+    --color-text-primary: #fff;
+    --color-text-secondary: #ECDFCC;
+    --color-text-tertiary: #ECDFCC;
+    --color-text-inverse: #1E201E;
 
-    --color-success: #ECDFCC;
-    --color-success-tint: rgba(236, 223, 204, 0.1);
-    --color-white: #fff;
-
-    --bg-image-url: url('../images/bg_black.jpg');
+    --bg-image-url: url(${bgDark});
     --bg-overlay: rgba(30, 32, 30, 0.8);
 
     --font-sans: 'Calibre', 'San Francisco', 'SF Pro Text', -apple-system, system-ui, sans-serif;
@@ -60,11 +63,72 @@ const GlobalStyle = createGlobalStyle`
     --ham-after-active: bottom 0.1s ease-out, transform 0.22s cubic-bezier(0.215, 0.61, 0.355, 1) 0.12s;
   }
 
+  :root[data-theme='light'] {
+    color-scheme: light;
+
+    --color-bg-primary: #ECDFCC;
+    --color-bg-primary-rgb: 236, 223, 204;
+    --color-bg-secondary: #1E201E;
+    --color-bg-tertiary: #1E201E;
+
+    --color-accent: #1E201E;
+    --color-accent-tint: rgba(0, 0, 0, 0.1);
+
+    --color-text-primary: #1E201E;
+    --color-text-secondary: #323232;
+    --color-text-tertiary: #323232;
+    --color-text-inverse: #ECDFCC;
+
+    --bg-image-url: url(${bgLight});
+    --bg-overlay: rgba(236, 223, 204, 0.8);
+  }
+
+  /*
+   * Desktop renders at 90% scale (the site's preferred density, like Chrome zoom at 90%).
+   * CSS zoom also shrinks vh units, so use var(--full-height) instead of 100vh for "one screen tall".
+   */
+  :root {
+    --full-height: 100vh;
+  }
+  @media (min-width: 1081px) {
+    html {
+      zoom: 0.9;
+    }
+    :root {
+      --full-height: calc(100vh / 0.9);
+    }
+  }
+
   html {
     box-sizing: border-box;
     width: 100%;
+    background-color: var(--color-bg-primary);
+    scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: var(--color-bg-secondary) transparent;
+
+    @media (prefers-reduced-motion: reduce) {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* One visible keyboard-focus style for every interactive element. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  /* Text for screen readers only. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* Scrollbar Styles */
@@ -104,7 +168,9 @@ const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     position: relative;
-    
+
+    /* No background here: the schematic image is painted by body::before (z-index -2), which must
+       sit above the page colour set on <html>. */
     color: var(--color-text-tertiary);
     font-family: var(--font-sans);
     font-size: var(--fz-xl);
@@ -117,11 +183,10 @@ const GlobalStyle = createGlobalStyle`
       left: 0;
       width: 100%;
       height: 100%;
+      /* The image is pre-blurred (no live CSS blur, which repainted on every scroll). */
       background-image: var(--bg-image-url);
-      background-attachment: fixed;
       background-size: cover;
       background-position: center;
-      filter: blur(1.5px);
       z-index: -2;
     }
 
@@ -161,7 +226,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #root {
-    min-height: 100vh;
+    min-height: var(--full-height);
     display: grid;
     grid-template-rows: 1fr auto;
     grid-template-columns: 100%;
@@ -171,7 +236,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0 auto;
     width: 100%;
     max-width: 1600px;
-    min-height: 100vh;
+    min-height: var(--full-height);
     padding: 200px 150px;
 
     @media (max-width: 1080px) {
@@ -290,11 +355,6 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     max-width: 100%;
     vertical-align: middle;
-  }
-
-  img[alt=""],
-  img:not([alt]) {
-    filter: blur(5px);
   }
 
   svg {
@@ -482,9 +542,6 @@ const GlobalStyle = createGlobalStyle`
   }
 
   ${TransitionStyles};
-
-  ${PrismStyles};
 `;
 
 export default GlobalStyle;
-

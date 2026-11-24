@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { email } from '@config';
-import { Side } from '@components';
+import { getEmail, openEmail } from '@utils/email';
+import Side from './side';
 
 const StyledLinkWrapper = styled.div`
   display: flex;
@@ -19,31 +18,42 @@ const StyledLinkWrapper = styled.div`
     background-color: var(--color-text-secondary);
   }
 
-  a {
+  button {
     margin: 20px auto;
     padding: 10px;
+    border: 0;
+    background: none;
+    color: var(--color-accent);
     font-family: var(--font-mono);
     font-size: var(--fz-xxs);
     letter-spacing: 0.1em;
     writing-mode: vertical-rl;
+    transition: var(--transition);
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       transform: translateY(-3px);
     }
   }
 `;
 
-const Email = ({ isHome }) => (
-  <Side isHome={isHome} orientation="right">
-    <StyledLinkWrapper>
-      <a href={`mailto:${email}`}>{email}</a>
-    </StyledLinkWrapper>
-  </Side>
-);
+// Right-edge email rail. The address is filled in only in the browser (see src/utils/email.js),
+// so it never appears in the page's HTML.
+const Email = () => {
+  const [address, setAddress] = useState('');
+  useEffect(() => setAddress(getEmail()), []);
 
-Email.propTypes = {
-  isHome: PropTypes.bool,
+  return (
+    <Side orientation="right">
+      <StyledLinkWrapper>
+        {address && (
+          <button type="button" onClick={openEmail} aria-label={`Email ${address}`}>
+            {address}
+          </button>
+        )}
+      </StyledLinkWrapper>
+    </Side>
+  );
 };
 
 export default Email;

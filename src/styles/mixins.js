@@ -13,24 +13,9 @@ const button = css`
   transition: var(--transition);
   padding: 1.25rem 1.75rem;
 
-  &:hover {
-    background-color: var(--color-accent-tint);
-  }
-  
-  &:focus {
-    outline: none;
-  }
-  
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-  
+  &:hover,
   &:active {
     background-color: var(--color-accent-tint);
-  }
-  &:after {
-    display: none !important;
   }
 `;
 
@@ -57,43 +42,28 @@ const mixins = {
     cursor: pointer;
     &:hover,
     &:active,
-    &:focus {
+    &:focus-visible {
       color: var(--color-accent);
-      outline: 0;
     }
   `,
 
+  // Links inside running text: always faintly underlined (so they read as links), solid on hover.
+  // Plain inline text-decoration wraps correctly across lines, unlike a pseudo-element underline.
   inlineLink: css`
-    display: inline-block;
-    text-decoration: none;
-    text-decoration-skip-ink: auto;
-    position: relative;
-    transition: var(--transition);
-    cursor: pointer;
+    display: inline;
     color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: currentColor; /* fallback for browsers without color-mix() */
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-decoration-skip-ink: auto;
+    transition: text-decoration-color 0.25s var(--easing);
+    cursor: pointer;
     &:hover,
-    &:focus,
+    &:focus-visible,
     &:active {
-      color: var(--color-accent);
-      outline: 0;
-      &:after {
-        width: 100%;
-      }
-      & > * {
-        color: var(--color-accent) !important;
-        transition: var(--transition);
-      }
-    }
-    &:after {
-      content: '';
-      display: block;
-      width: 0;
-      height: 1px;
-      position: relative;
-      bottom: 0.37em;
-      background-color: var(--color-accent);
-      transition: var(--transition);
-      opacity: 0.5;
+      text-decoration-color: currentColor;
     }
   `,
 
@@ -111,24 +81,9 @@ const mixins = {
     text-decoration: none;
     cursor: pointer;
     transition: var(--transition);
-    &:hover {
-      background-color: var(--color-accent-tint);
-    }
-    
-    &:focus {
-      outline: none;
-    }
-    
-    &:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-    
+    &:hover,
     &:active {
       background-color: var(--color-accent-tint);
-    }
-    &:after {
-      display: none !important;
     }
   `,
 
@@ -149,23 +104,10 @@ const mixins = {
       transform: translateY(-3px);
       box-shadow: 0 10px 30px -15px var(--color-shadow);
     }
-    
-    &:focus {
-      outline: none;
-    }
-    
-    &:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-    
     &:active {
       background-color: var(--color-accent-tint);
       transform: translateY(-1px);
       box-shadow: 0 5px 15px -10px var(--color-shadow);
-    }
-    &:after {
-      display: none !important;
     }
   `,
 

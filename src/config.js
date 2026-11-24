@@ -1,71 +1,28 @@
+// Site-wide settings. Content (jobs, projects, news, ...) lives in /content as markdown.
+// The contact email is deliberately not here: see src/utils/email.js (kept out of the page source).
 module.exports = {
-  email: 'adhardaksh@gmail.com',
-
+  // Icons exist for: GitHub, Linkedin, Twitter, Instagram (see src/components/icons/icon.js).
   socialMedia: [
-    {
-      name: 'Linkedin',
-      url: 'https://www.linkedin.com/in/daksh-adhar/',
-    },
-    {
-      name: 'GitHub',
-      url: 'https://github.com/a-daksh',
-    },
-    {
-      name: 'Twitter',
-      url: 'https://twitter.com/DakshAdhar',
-    },
-    // {
-    //   name: 'Instagram',
-    //   url: 'https://www.instagram.com/daksh_adhar/',
-    // },
+    { name: 'Linkedin', url: 'https://www.linkedin.com/in/daksh-adhar/' },
+    { name: 'GitHub', url: 'https://github.com/a-daksh' },
+    { name: 'Twitter', url: 'https://twitter.com/DakshAdhar' },
   ],
 
+  // Top navigation; each url points at a section id on the home page.
   navLinks: [
-    {
-      name: 'About',
-      url: '/#about',
-    },
-    {
-      name: 'Experience',
-      url: '/#jobs',
-    },
-    {
-      name: 'Skills',
-      url: '/#skills',
-    },    
-    {
-      name: 'Projects',
-      url: '/#featured',
-    },
-    {
-      name: 'Publications',
-      url: '/#publications',
-    },
-    {
-      name: 'Contact',
-      url: '/#contact',
-    },
+    { name: 'About', url: '/#about' },
+    { name: 'Experience', url: '/#jobs' },
+    { name: 'Skills', url: '/#skills' },
+    { name: 'Projects', url: '/#featured' },
+    { name: 'Publications', url: '/#publications' },
+    { name: 'Contact', url: '/#contact' },
   ],
 
-  colors: {
-    orange: '#265537',
-    navy: '#0a192f',
-    darkNavy: '#020c1b',
-  },
-
-  srConfig: (delay = 200, viewFactor = 0.25) => ({
-    origin: 'bottom',
-    distance: '20px',
-    duration: 500,
-    delay,
-    rotate: { x: 0, y: 0, z: 0 },
-    opacity: 0,
-    scale: 1,
+  // Settings for the "fade up on scroll" effect (src/utils/reveal.js).
+  revealConfig: (delay = 200) => ({
+    delay, // ms
+    distance: 20, // px
+    duration: 500, // ms
     easing: 'cubic-bezier(0.645, 0.045, 0.355, 1)',
-    mobile: true,
-    reset: false,
-    useDelay: 'always',
-    viewFactor,
-    viewOffset: { top: 0, right: 0, bottom: 0, left: 0 },
   }),
 };

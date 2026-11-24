@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '@contexts/ThemeContext';
 
 const StyledToggle = styled.button`
   background: transparent;
@@ -19,17 +19,9 @@ const StyledToggle = styled.button`
   &:hover {
     background-color: var(--color-accent-tint);
   }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
 `;
 
+// $-prefixed props are styled-components "transient" props: used for styling, never sent to the DOM.
 const ToggleSlider = styled.div`
   background: transparent;
   border: 1px solid var(--color-accent);
@@ -39,7 +31,7 @@ const ToggleSlider = styled.div`
   position: absolute;
   left: 6px;
   top: 50%;
-  transform: translateY(-50%) translateX(${props => props.isDark ? '0px' : '32px'});
+  transform: translateY(-50%) translateX(${({ $isDark }) => ($isDark ? '0px' : '32px')});
   transition: var(--transition);
 `;
 
@@ -50,7 +42,7 @@ const IconContainer = styled.div`
   width: 26px;
   height: 26px;
   z-index: 1;
-  
+
   svg {
     width: 16px;
     height: 16px;
@@ -59,11 +51,11 @@ const IconContainer = styled.div`
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
-    opacity: ${props => props.isActive ? '1' : '0.4'};
+    opacity: ${({ $isActive }) => ($isActive ? '1' : '0.4')};
     transition: var(--transition);
   }
-  
-  /* Adjust sun icon to center its circle, not the entire SVG */
+
+  /* Centre the sun's circle rather than its whole bounding box */
   &:last-child svg {
     transform: translateX(-1px);
   }
@@ -72,21 +64,19 @@ const IconContainer = styled.div`
 const ThemeToggle = () => {
   const { isDark, toggleTheme } = useTheme();
 
-  const handleClick = (e) => {
-    toggleTheme();
-    e.target.blur(); // Remove focus after click
-  };
-
   return (
-    <StyledToggle onClick={handleClick} aria-label="Toggle theme">
-      <IconContainer isActive={isDark}>
-        {/* Moon Icon */}
+    <StyledToggle
+      type="button"
+      onClick={toggleTheme}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}>
+      <IconContainer $isActive={isDark} aria-hidden="true">
+        {/* Moon */}
         <svg viewBox="0 0 24 24">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       </IconContainer>
-      <IconContainer isActive={!isDark}>
-        {/* Sun Icon */}
+      <IconContainer $isActive={!isDark} aria-hidden="true">
+        {/* Sun */}
         <svg viewBox="0 0 24 24">
           <circle cx="15.5" cy="12" r="7" />
           <line x1="15.5" y1="1" x2="15.5" y2="3" />
@@ -99,7 +89,7 @@ const ThemeToggle = () => {
           <line x1="21.86" y1="5.64" x2="23.28" y2="4.22" />
         </svg>
       </IconContainer>
-      <ToggleSlider isDark={isDark} />
+      <ToggleSlider $isDark={isDark} />
     </StyledToggle>
   );
 };

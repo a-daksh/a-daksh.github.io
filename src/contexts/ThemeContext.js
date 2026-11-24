@@ -1,8 +1,26 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import bgBlack from '../images/bg_black.jpg';
-import bgWhite from '../images/bg_white.jpg';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
-const ThemeContext = createContext();
+/*
+ * Light/dark theme state.
+ *
+ * The colours themselves are CSS variables in src/styles/GlobalStyle.js, keyed off
+ * <html data-theme="light|dark">. gatsby-ssr.js sets that attribute from the saved preference
+ * before the page paints, so there is no flash; this context only mirrors and flips it.
+ */
+
+export const THEME_STORAGE_KEY = 'theme';
+
+const ThemeContext = createContext(null);
+
+// Storage can throw (blocked cookies/site data, some in-app browsers): never let that break the page.
+const saveTheme = theme => {
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (e) {
+    // Preference just won't persist.
+  }
+};
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
@@ -13,61 +31,24 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
+  // Server render and first client render are always "dark" so hydration matches; the effect below
+  // then syncs with whatever gatsby-ssr.js already applied to <html>.
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    // Check localStorage for saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setIsDark(savedTheme === 'dark');
-    }
+    setIsDark(document.documentElement.dataset.theme !== 'light');
   }, []);
 
-  useEffect(() => {
-    // Save theme preference to localStorage
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
-    // Update CSS custom properties
-    const root = document.documentElement;
-
-    if (isDark) {
-      // Dark theme colors
-      root.style.setProperty('--color-bg-primary', '#1E201E');
-      root.style.setProperty('--color-bg-primary-rgb', '30, 32, 30');
-      root.style.setProperty('--color-bg-secondary', '#ECDFCC');
-      root.style.setProperty('--color-bg-tertiary', '#ECDFCC');
-      root.style.setProperty('--color-accent', '#fff');
-      root.style.setProperty('--color-accent-tint', 'rgba(255, 255, 255, 0.1)');
-      root.style.setProperty('--color-text-primary', '#fff');
-      root.style.setProperty('--color-text-secondary', '#ECDFCC');
-      root.style.setProperty('--color-text-tertiary', '#ECDFCC');
-      root.style.setProperty('--color-text-inverse', '#1E201E');
-      root.style.setProperty('--bg-image-url', `url(${bgBlack})`);
-      root.style.setProperty('--bg-overlay', 'rgba(30, 32, 30, 0.8)');
-    } else {
-      // Light theme colors (inverted)
-      root.style.setProperty('--color-bg-primary', '#ECDFCC');
-      root.style.setProperty('--color-bg-primary-rgb', '236, 223, 204');
-      root.style.setProperty('--color-bg-secondary', '#1E201E');
-      root.style.setProperty('--color-bg-tertiary', '#1E201E');
-      root.style.setProperty('--color-accent', '#1E201E');
-      root.style.setProperty('--color-accent-tint', 'rgba(0, 0, 0, 0.1)');
-      root.style.setProperty('--color-text-primary', '#1E201E');
-      root.style.setProperty('--color-text-secondary', '#323232');
-      root.style.setProperty('--color-text-tertiary', '#323232');
-      root.style.setProperty('--color-text-inverse', '#ECDFCC');
-      root.style.setProperty('--bg-image-url', `url(${bgWhite})`);
-      root.style.setProperty('--bg-overlay', 'rgba(236, 223, 204, 0.8)');
-    }
-  }, [isDark]);
-
   const toggleTheme = () => {
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    saveTheme(next);
     setIsDark(!isDark);
   };
 
-  return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ isDark, toggleTheme }}>{children}</ThemeContext.Provider>;
+};
+
+ThemeProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

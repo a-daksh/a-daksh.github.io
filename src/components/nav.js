@@ -1,37 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { withPrefix } from 'gatsby';
-import PropTypes from 'prop-types';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { navLinks } from '@config';
-import { loaderDelay } from '@utils';
-import { useScrollDirection } from '@hooks';
-import { Menu } from '@components';
-import { ThemeToggle } from '@components';
-
-const StyledHeader = styled.header`
-  ${({ theme }) => theme.mixins.flexBetween};
-  position: fixed;
-  top: 0;
-  z-index: 11;
-  padding: 0px 50px;
-  width: 100%;
-  height: var(--nav-height);
-  background-color: var(--color-bg-primary);
-  filter: none !important;
-  pointer-events: auto !important;
-  user-select: auto !important;
-  backdrop-filter: blur(10px);
-  transition: var(--transition);
-  opacity: 0.7;
-
-  @media (max-width: 1080px) {
-    padding: 0 40px;
-  }
-  @media (max-width: 768px) {
-    padding: 0 25px;
-  }
-`;
+import { NAV_COLLAPSE_BP } from '@utils';
+import { IconLogo } from '@components/icons';
+import Header from './header';
+import Menu from './menu';
+import ThemeToggle from './themeToggle';
 
 const StyledNav = styled.nav`
   ${({ theme }) => theme.mixins.flexBetween};
@@ -43,15 +18,15 @@ const StyledNav = styled.nav`
   z-index: 12;
 `;
 
-const StyledThemeToggleContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
+const StyledLogo = styled.a`
+  display: block;
+  line-height: 0;
+  color: var(--color-text-primary);
+  transition: var(--transition);
 
-const StyledRightSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  &:hover {
+    transform: translateY(-2px);
+  }
 `;
 
 const StyledLinks = styled.div`
@@ -59,7 +34,7 @@ const StyledLinks = styled.div`
   align-items: center;
   margin: 0 auto;
 
-  @media (max-width: 1000px) {
+  @media (max-width: ${NAV_COLLAPSE_BP}px) {
     display: none;
   }
 
@@ -77,6 +52,12 @@ const StyledLinks = styled.div`
 
       a {
         padding: 10px;
+        color: var(--color-text-secondary);
+
+        &:hover,
+        &:focus-visible {
+          color: var(--color-text-primary);
+        }
 
         &:before {
           content: '0' counter(item) '.';
@@ -96,113 +77,44 @@ const StyledLinks = styled.div`
   }
 `;
 
-const Nav = ({ isHome }) => {
-  const [isMounted, setIsMounted] = useState(!isHome);
-  const scrollDirection = useScrollDirection('down');
-  const [scrolledToTop, setScrolledToTop] = useState(true);
+const StyledActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+`;
 
-  const handleScroll = () => {
-    setScrolledToTop(window.pageYOffset < 50);
-  };
+const Nav = () => (
+  <Header>
+    <StyledNav aria-label="Main">
+      <StyledLogo href="#top" aria-label="DA, Daksh Adhar: back to top" className="intro-fade">
+        <IconLogo />
+      </StyledLogo>
 
-  const smoothScrollTo = (url) => {
-    const targetId = url.replace('/#', '');
-    const targetElement = document.getElementById(targetId);
+      <StyledLinks>
+        <ol>
+          {navLinks.map(({ url, name }, i) => (
+            <li key={name} className="intro-down" style={{ '--intro-delay': `${i * 70}ms` }}>
+              <a href={url}>{name}</a>
+            </li>
+          ))}
+        </ol>
+        <div className="intro-down" style={{ '--intro-delay': `${navLinks.length * 70}ms` }}>
+          <a
+            className="resume-button"
+            href={withPrefix('/Daksh_Adhar.pdf')}
+            target="_blank"
+            rel="noopener noreferrer">
+            Resume
+          </a>
+        </div>
+      </StyledLinks>
 
-    if (targetElement) {
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsMounted(true);
-    }, 100);
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      clearTimeout(timeout);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const timeout = isHome ? loaderDelay : 0;
-  const fadeClass = isHome ? 'fade' : '';
-  const fadeDownClass = isHome ? 'fadedown' : '';
-
-  return (
-    <StyledHeader>
-      <StyledNav>
-        <StyledLinks>
-          <ol>
-            <TransitionGroup component={null}>
-              {isMounted &&
-                navLinks &&
-                navLinks.map(({ url, name }, i) => (
-                  <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
-                    <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
-                      <a
-                        href={url}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          smoothScrollTo(url);
-                        }}
-                      >
-                        {name}
-                      </a>
-                    </li>
-                  </CSSTransition>
-                ))}
-            </TransitionGroup>
-          </ol>
-
-          <TransitionGroup component={null}>
-            {isMounted && (
-              <CSSTransition classNames={fadeDownClass} timeout={timeout}>
-                <div style={{ transitionDelay: `${isHome ? navLinks.length * 100 : 0}ms` }}>
-                  <a
-                    className="resume-button"
-                    href={withPrefix('/Daksh_Adhar.pdf')}
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    Resume
-                  </a>
-                </div>
-              </CSSTransition>
-            )}
-          </TransitionGroup>
-        </StyledLinks>
-
-        <StyledThemeToggleContainer>
-          <TransitionGroup component={null}>
-            {isMounted && (
-              <CSSTransition classNames={fadeClass} timeout={timeout}>
-                <ThemeToggle />
-              </CSSTransition>
-            )}
-          </TransitionGroup>
-        </StyledThemeToggleContainer>
-
-        <StyledRightSection>
-          <TransitionGroup component={null}>
-            {isMounted && (
-              <CSSTransition classNames={fadeClass} timeout={timeout}>
-                <Menu />
-              </CSSTransition>
-            )}
-          </TransitionGroup>
-        </StyledRightSection>
-      </StyledNav>
-    </StyledHeader>
-  );
-};
-
-Nav.propTypes = {
-  isHome: PropTypes.bool,
-};
+      <StyledActions className="intro-fade">
+        <ThemeToggle />
+        <Menu />
+      </StyledActions>
+    </StyledNav>
+  </Header>
+);
 
 export default Nav;

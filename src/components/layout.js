@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
-import { Head, Nav, Social, Email, Footer } from '@components';
+import { Nav, BackNav, Social, Email, Footer } from '@components';
 import { GlobalStyle, theme } from '@styles';
-import { ThemeProvider as CustomThemeProvider } from '../contexts/ThemeContext';
-import Galaxy from './Galaxy';
-import useBeepDetection from '../hooks/useBeepDetection';
-
-// https://medium.com/@chrisfitkin/how-to-smooth-scroll-links-in-gatsby-3dc445299558
-if (typeof window !== 'undefined') {
-  // eslint-disable-next-line global-require
-  require('smooth-scroll')('a[href*="#"]');
-}
+import { ThemeProvider as SiteThemeProvider } from '@contexts/ThemeContext';
+import { useBeepDetection } from '@hooks';
+import Galaxy from './galaxy';
 
 const SkipToContentLink = styled.a`
   position: absolute;
@@ -28,80 +22,61 @@ const SkipToContentLink = styled.a`
     width: auto;
     height: auto;
     padding: 18px 23px;
-    outline: 0;
     border-radius: var(--border-radius);
     background-color: var(--color-bg-secondary);
-    color: var(--color-accent);
+    color: var(--color-text-inverse);
     font-family: var(--font-mono);
     font-size: var(--fz-sm);
     line-height: 1;
     text-decoration: none;
-    cursor: pointer;
     overflow: auto;
-    transition: var(--transition);
     z-index: 99;
   }
 `;
+
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: var(--full-height);
 `;
 
+/**
+ * Shared page shell. The home page gets the full section nav and the side rails;
+ * every other page (archive, 404) gets a compact "Back" header.
+ */
 const Layout = ({ children, location }) => {
   const isHome = location.pathname === '/';
   const [showGalaxy, setShowGalaxy] = useState(false);
 
-  // Detect "beep" typing
-  useBeepDetection(() => {
-    setShowGalaxy(true);
-  });
+  // Easter egg: typing "beep" anywhere opens the galaxy.
+  useBeepDetection(() => setShowGalaxy(true));
 
+  // Arriving from another page with a hash (e.g. /#about): scroll to and focus that section.
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.substring(1); // location.hash without the '#'
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView();
-          el.focus();
-        }
-      }, 0);
+    if (!location.hash) {
+      return;
+    }
+    const el = document.getElementById(location.hash.substring(1));
+    if (el) {
+      el.scrollIntoView();
+      el.focus({ preventScroll: true });
     }
   }, [location.hash]);
 
-  // Sets target="_blank" rel="noopener noreferrer" on external links
-  const handleExternalLinks = () => {
-    const allLinks = Array.from(document.querySelectorAll('a'));
-    if (allLinks.length > 0) {
-      allLinks.forEach(link => {
-        if (link.host !== window.location.host) {
-          link.setAttribute('rel', 'noopener noreferrer');
-          link.setAttribute('target', '_blank');
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    handleExternalLinks();
-  }, []);
-
+  // Page <head> tags come from each page's Gatsby `Head` export (see src/components/seo.js).
   return (
     <>
-      <Head />
-
       <div id="root">
-        <CustomThemeProvider>
+        <SiteThemeProvider>
           <ThemeProvider theme={theme}>
             <GlobalStyle />
 
             <SkipToContentLink href="#content">Skip to Content</SkipToContentLink>
 
             <StyledContent>
-              <Nav isHome={isHome} />
-              <Social isHome={isHome} />
-              <Email isHome={isHome} />
+              {isHome ? <Nav /> : <BackNav />}
+              {isHome && <Social />}
+              {isHome && <Email />}
 
               <div id="content">
                 {children}
@@ -109,11 +84,9 @@ const Layout = ({ children, location }) => {
               </div>
             </StyledContent>
 
-            {showGalaxy && (
-              <Galaxy onClose={() => setShowGalaxy(false)} />
-            )}
+            {showGalaxy && <Galaxy onClose={() => setShowGalaxy(false)} />}
           </ThemeProvider>
-        </CustomThemeProvider>
+        </SiteThemeProvider>
       </div>
     </>
   );

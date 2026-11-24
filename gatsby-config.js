@@ -1,147 +1,71 @@
-const config = require('./src/config');
+/**
+ * Gatsby config: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-config/
+ * The site is deployed at the domain root (https://a-daksh.github.io), so no pathPrefix.
+ */
+const SITE_URL = 'https://a-daksh.github.io';
+const BG_DARK = '#1E201E'; // keep in sync with --color-bg-primary in src/styles/GlobalStyle.js
 
 module.exports = {
-  // pathPrefix and assetPrefix removed to deploy at root
   siteMetadata: {
     title: 'Daksh Adhar',
     description:
-      'Hi! I am Daksh Adhar, a MS Robotic Systems Development (MRSD) student at Carnegie Mellon University graduating in May 2026. Welcome to my Website!',
-    siteUrl: 'https://a-daksh.github.io',
+      'Hi! I am Daksh Adhar, an AI Engineer at Foundation Robotics working on robot learning. Welcome to my website!',
+    siteUrl: SITE_URL,
     image: '/og.png',
     author: 'Daksh Adhar',
-    keywords: 'Daksh Adhar, robotics engineer, machine learning, AI, autonomous systems, portfolio, 1X, AI Resident',
+    keywords:
+      'Daksh Adhar, robotics engineer, robot learning, reinforcement learning, dexterous manipulation, AI Engineer, Foundation Robotics, portfolio',
   },
   plugins: [
-    `gatsby-plugin-image`,
-    `gatsby-plugin-sharp`,
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-react-helmet`,
-    `gatsby-plugin-styled-components`,
-    `gatsby-plugin-sitemap`,
-    `gatsby-plugin-robots-txt`,
-    `gatsby-plugin-offline`,
+    'gatsby-plugin-styled-components',
+    'gatsby-plugin-image',
+    {
+      resolve: 'gatsby-plugin-sharp',
+      options: {
+        defaults: {
+          formats: ['auto', 'webp'],
+          quality: 82,
+          placeholder: 'dominantColor',
+        },
+      },
+    },
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-sitemap',
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
-        host: 'https://a-daksh.github.io',
-        sitemap: 'https://a-daksh.github.io/sitemap-0.xml',
-        policy: [{userAgent: '*', allow: '/'}]
-      }
-    },
-    {
-      resolve: `gatsby-plugin-manifest`,
-      options: {
-        name: 'DakshAdhar',
-        short_name: 'DakshAdhar',
-        start_url: '/',
-        background_color: config.colors.darkNavy,
-        theme_color: config.colors.navy,
-        display: 'minimal-ui',
-        icon: 'src/images/favicon.png', // Path to your favicon
+        sitemap: `${SITE_URL}/sitemap-index.xml`,
+        policy: [{ userAgent: '*', allow: '/' }],
       },
     },
-    
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: 'gatsby-plugin-manifest',
       options: {
-        name: `images`,
-        path: `${__dirname}/src/images`,
+        name: 'Daksh Adhar',
+        short_name: 'Daksh Adhar',
+        start_url: '/',
+        background_color: BG_DARK,
+        theme_color: BG_DARK,
+        display: 'minimal-ui',
+        icon: 'src/images/favicon.png',
       },
     },
     {
       resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'content',
-        path: `${__dirname}/content/`,
-      },
+      options: { name: 'images', path: `${__dirname}/src/images` },
     },
     {
-      resolve: `gatsby-transformer-remark`,
+      resolve: 'gatsby-source-filesystem',
+      options: { name: 'content', path: `${__dirname}/content/` },
+    },
+    {
+      resolve: 'gatsby-transformer-remark',
       options: {
         plugins: [
           {
-            // https://www.gatsbyjs.org/packages/gatsby-remark-external-links
+            // Links inside markdown content open in a new tab, safely.
             resolve: 'gatsby-remark-external-links',
-            options: {
-              target: '_blank',
-              rel: 'nofollow noopener noreferrer',
-            },
-          },
-          {
-            // https://www.gatsbyjs.org/packages/gatsby-remark-images
-            resolve: 'gatsby-remark-images',
-            options: {
-              maxWidth: 700,
-              linkImagesToOriginal: true,
-              quality: 90,
-              tracedSVG: { color: config.colors.green },
-            },
-          },
-          {
-            // https://www.gatsbyjs.org/packages/gatsby-remark-code-titles/
-            resolve: 'gatsby-remark-code-titles',
-          }, // IMPORTANT: this must be ahead of other plugins that use code blocks
-          {
-            // https://www.gatsbyjs.org/packages/gatsby-remark-prismjs
-            resolve: `gatsby-remark-prismjs`,
-            options: {
-              // Class prefix for <pre> tags containing syntax highlighting;
-              // defaults to 'language-' (e.g. <pre class="language-js">).
-              // If your site loads Prism into the browser at runtime,
-              // (e.g. for use with libraries like react-live),
-              // you may use this to prevent Prism from re-processing syntax.
-              // This is an uncommon use-case though;
-              // If you're unsure, it's best to use the default value.
-              classPrefix: 'language-',
-              // This is used to allow setting a language for inline code
-              // (i.e. single backticks) by creating a separator.
-              // This separator is a string and will do no white-space
-              // stripping.
-              // A suggested value for English speakers is the non-ascii
-              // character '›'.
-              inlineCodeMarker: null,
-              // This lets you set up language aliases.  For example,
-              // setting this to '{ sh: "bash" }' will let you use
-              // the language "sh" which will highlight using the
-              // bash highlighter.
-              aliases: {},
-              // This toggles the display of line numbers globally alongside the code.
-              // To use it, add the following line in gatsby-browser.js
-              // right after importing the prism color scheme:
-              //  require("prismjs/plugins/line-numbers/prism-line-numbers.css")
-              // Defaults to false.
-              // If you wish to only show line numbers on certain code blocks,
-              // leave false and use the {numberLines: true} syntax below
-              showLineNumbers: false,
-              // If setting this to true, the parser won't handle and highlight inline
-              // code used in markdown i.e. single backtick code like `this`.
-              noInlineHighlight: false,
-              // This adds a new language definition to Prism or extend an already
-              // existing language definition. More details on this option can be
-              // found under the header "Add new language definition or extend an
-              // existing language" below.
-              languageExtensions: [
-                {
-                  language: 'superscript',
-                  extend: 'javascript',
-                  definition: {
-                    superscript_types: /(SuperType)/,
-                  },
-                  insertBefore: {
-                    function: {
-                      superscript_keywords: /(superif|superelse)/,
-                    },
-                  },
-                },
-              ],
-              // Customize the prompt used in shell output
-              // Values below are default
-              prompt: {
-                user: 'root',
-                host: 'localhost',
-                global: false,
-              },
-            },
+            options: { target: '_blank', rel: 'noopener noreferrer' },
           },
         ],
       },

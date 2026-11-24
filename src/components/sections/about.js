@@ -1,13 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { GatsbyImage } from "gatsby-plugin-image"
+import { GatsbyImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
+import { revealConfig } from '@config';
+import { reveal } from '@utils/reveal';
 
 const StyledAboutSection = styled.section`
-  max-width: 900px;
-
   .inner {
     display: grid;
     grid-template-columns: 3fr 2fr;
@@ -50,11 +48,6 @@ const StyledText = styled.div`
 
     a {
       ${({ theme }) => theme.mixins.inlineLink};
-      color: var(--color-accent);
-
-      &:after {
-        width: 100% !important;
-      }
     }
   }
 `;
@@ -68,44 +61,31 @@ const StyledPic = styled.div`
     width: 70%;
   }
 
+  /* Same treatment as the project covers: a light tint that lifts on hover. */
   .wrapper {
     display: block;
     position: relative;
     width: 100%;
     border-radius: var(--border-radius);
-    background-color: transparent;
-
-    &:hover,
-    &:focus {
-      outline: 0;
-
-      .img {
-        filter: none;
-        mix-blend-mode: normal;
-      }
-    }
+    overflow: hidden;
 
     .img {
-      max-width: 500px;
-      position: relative;
       border-radius: var(--border-radius);
-      mix-blend-mode: multiply;
-      filter: grayscale(80%) contrast(1);
-      transition: var(--transition);
     }
 
     &:before {
       content: '';
-      display: block;
       position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
+      inset: 0;
+      z-index: 1;
       border-radius: var(--border-radius);
-      background-color: transparent;
-      mix-blend-mode: screen;
+      background-color: var(--color-bg-primary);
+      opacity: 0.3;
       transition: var(--transition);
+    }
+
+    &:hover:before {
+      opacity: 0;
     }
   }
 `;
@@ -113,17 +93,9 @@ const StyledPic = styled.div`
 const About = () => {
   const data = useStaticQuery(graphql`
     query {
-      avatar: file(
-        sourceInstanceName: { eq: "images" }
-        relativePath: { eq: "DakshAdhar.jpg" }
-      ) {
+      avatar: file(sourceInstanceName: { eq: "images" }, relativePath: { eq: "DakshAdhar.jpg" }) {
         childImageSharp {
-          gatsbyImageData(
-            layout: FULL_WIDTH
-            tracedSVGOptions: {
-              color: "#64ffda"
-            }
-          )
+          gatsbyImageData(width: 250, layout: CONSTRAINED, placeholder: DOMINANT_COLOR)
         }
       }
     }
@@ -132,7 +104,7 @@ const About = () => {
   const revealContainer = useRef(null);
 
   useEffect(() => {
-    sr.reveal(revealContainer.current, srConfig());
+    reveal(revealContainer.current, revealConfig());
   }, []);
 
   return (
@@ -142,27 +114,72 @@ const About = () => {
       <div className="inner">
         <StyledText>
           <div>
-          <p> 
-            Hi! I'm Daksh, a graduate student at the Robotics Institute, Carnegie Mellon University, where I'm pursuing a Master of Science in Robotics Systems Development. I previously earned my Bachelor of Technology in Engineering Physics from the <a href="https://www.iitg.ac.in/" target="_blank" rel="noopener noreferrer">Indian Institute of Technology Guwahati</a>.
-          </p> 
+            <p>
+              Hi! I'm Daksh, an AI Engineer on the World Model Team at{' '}
+              <a href="https://foundation.bot/" target="_blank" rel="noopener noreferrer">
+                Foundation Robotics
+              </a>{' '}
+              in San Francisco. I earned my M.S. in Robotic Systems Development from the Robotics
+              Institute at{' '}
+              <a href="https://www.ri.cmu.edu/" target="_blank" rel="noopener noreferrer">
+                Carnegie Mellon University
+              </a>{' '}
+              in May 2026, and my B.Tech. in Engineering Physics from the{' '}
+              <a href="https://www.iitg.ac.in/" target="_blank" rel="noopener noreferrer">
+                Indian Institute of Technology Guwahati
+              </a>
+              .
+            </p>
 
-          <p> 
-            I'm interested in building intelligent robotic systems that can safely and reliably interact with the human world. I enjoy working at the intersection of learning, control, and real-time perception, with a particular focus on medical and biomimetic robotics.
-          </p> 
+            <p>
+              I'm interested in robot learning that scales: dexterous manipulation, RL post-training
+              of generative policies, and learning from human data. I like working end to end, from
+              teleoperation and data pipelines to training policies and deploying them on real
+              robots.
+            </p>
 
-          <p> 
-            I’m currently an AI Resident at <a href="https://www.1x.tech/" target="_blank" rel="noopener noreferrer">1X</a>, working on reinforcement learning for the NEO Gamma humanoid. Previously, I collaborated with <a href="https://www.iitg.ac.in/s.m.hazarika/" target="_blank" rel="noopener noreferrer">Dr. S. M. Hazarika</a> at IIT Guwahati and <a href="https://sites.google.com/iitgn.ac.in/nvg/" target="_blank" rel="noopener noreferrer">Dr. Nithin V. George</a> at IIT Gandhinagar.
-          </p> 
+            <p>
+              Previously, I was an AI Resident at{' '}
+              <a href="https://www.1x.tech/" target="_blank" rel="noopener noreferrer">
+                1X
+              </a>
+              , training RL policies for in-hand manipulation on the NEO hand. I was also a research
+              assistant in{' '}
+              <a href="https://msimchowitz.github.io/" target="_blank" rel="noopener noreferrer">
+                Prof. Max Simchowitz's
+              </a>{' '}
+              lab at CMU, building a benchmark for dexterous manipulation. Before that, I worked
+              with{' '}
+              <a
+                href="https://www.iitg.ac.in/s.m.hazarika/"
+                target="_blank"
+                rel="noopener noreferrer">
+                Dr. S. M. Hazarika
+              </a>{' '}
+              at IIT Guwahati and{' '}
+              <a
+                href="https://sites.google.com/iitgn.ac.in/nvg/"
+                target="_blank"
+                rel="noopener noreferrer">
+                Dr. Nithin V. George
+              </a>{' '}
+              at IIT Gandhinagar.
+            </p>
 
-          <p> 
-            In my spare time, I’m usually playing Minecraft, watching cooking videos (then ordering DoorDash :P), or sleeping.
-          </p>
+            <p>
+              In my spare time, I’m usually playing Minecraft, watching cooking videos (then
+              ordering DoorDash :P), or sleeping.
+            </p>
           </div>
         </StyledText>
 
         <StyledPic>
           <div className="wrapper">
-            <GatsbyImage image={data.avatar.childImageSharp.gatsbyImageData} alt="Avatar" className="img" />
+            <GatsbyImage
+              image={data.avatar.childImageSharp.gatsbyImageData}
+              alt="Daksh Adhar"
+              className="img"
+            />
           </div>
         </StyledPic>
       </div>

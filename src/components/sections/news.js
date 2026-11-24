@@ -3,7 +3,6 @@ import { useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
 
 const StyledNewsSection = styled.section`
-  max-width: 900px;
   padding: 60px 0;
 
   @media (max-width: 768px) {
@@ -22,6 +21,9 @@ const StyledNewsSection = styled.section`
   }
 
   .news-container {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
     max-height: 400px;
     height: 200px;
     overflow-y: auto;
@@ -99,88 +101,63 @@ const StyledNewsSection = styled.section`
       line-height: 1.5;
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
 
       a {
         ${({ theme }) => theme.mixins.inlineLink};
-        color: var(--color-accent);
-        font-size: inherit;
-
-        &:after {
-          width: 100% !important;
-        }
       }
     }
   }
 `;
 
+// Short dated updates. Content: content/news/*.md with `date` and optional `emoji` frontmatter.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// 'YYYY-MM-DD' -> 'Mon YYYY'. Done by hand (not toLocaleString) so the server-rendered HTML and the
+// browser always produce identical text, whatever their locale or time zone.
+const formatMonth = isoDate => {
+  const [year, month] = (isoDate || '').split('-');
+  return MONTHS[Number(month) - 1] ? `${MONTHS[Number(month) - 1]} ${year}` : isoDate;
+};
+
 const News = () => {
   const data = useStaticQuery(graphql`
     query {
       news: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/news/" } }
+        filter: { fileAbsolutePath: { regex: "/content/news/" } }
         sort: { frontmatter: { date: DESC } }
       ) {
-        edges {
-          node {
-            frontmatter {
-              date
-              emoji
-            }
-            html
+        nodes {
+          id
+          html
+          frontmatter {
+            date
+            emoji
           }
         }
       }
     }
   `);
-
-  // Format date to "Month YYYY" format
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const month = date.toLocaleString('default', { month: 'short' });
-    const year = date.getFullYear();
-    return `${month} ${year}`;
-  };
-
-  const newsList = data.news.edges
-    .filter(({ node }) => node)
-    .map(({ node }) => ({
-      node,
-      sortDate: new Date(node.frontmatter.date),
-    }))
-    .sort((a, b) => b.sortDate - a.sortDate); // DESC order (newest first)
+  const items = data.news.nodes;
 
   return (
     <StyledNewsSection id="news">
       <h2 className="news-heading">News</h2>
-      
-      <div className="news-container">
-        {newsList && newsList.length > 0 ? (
-          newsList.map(({ node }, i) => {
-            const { frontmatter, html } = node;
-            const { date, emoji } = frontmatter;
 
-            return (
-              <div key={i} className="news-item">
-                <div className="news-date">{formatDate(date)}</div>
-                <div className="news-content">
-                  {emoji && <span>{emoji}</span>}
-                  <span dangerouslySetInnerHTML={{ __html: html }} />
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="news-item">
-            <div className="news-content">No news items yet.</div>
-          </div>
-        )}
-      </div>
+      <ul className="news-container">
+        {items.map(({ id, html, frontmatter: { date, emoji } }) => (
+          <li key={id} className="news-item">
+            <div className="news-date">{formatMonth(date)}</div>
+            <div className="news-content">
+              {emoji && <span aria-hidden="true">{emoji}</span>}
+              <span dangerouslySetInnerHTML={{ __html: html }} />
+            </div>
+          </li>
+        ))}
+      </ul>
     </StyledNewsSection>
   );
 };
 
 export default News;
-

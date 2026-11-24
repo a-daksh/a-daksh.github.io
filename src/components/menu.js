@@ -1,36 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Helmet } from 'react-helmet';
+import React, { useEffect, useRef, useState } from 'react';
 import { withPrefix } from 'gatsby';
 import styled from 'styled-components';
 import { navLinks } from '@config';
-import { KEY_CODES } from '@utils';
+import { KEY_CODES, NAV_COLLAPSE_BP } from '@utils';
 import { useOnClickOutside } from '@hooks';
 
 const StyledMenu = styled.div`
   display: none;
 
-  @media (max-width: 1000px) {
+  @media (max-width: ${NAV_COLLAPSE_BP}px) {
     display: block;
   }
 `;
 
+// Styled-components "transient" props ($-prefixed) are not forwarded to the DOM.
 const StyledHamburgerButton = styled.button`
-  display: none;
-
-  @media (max-width: 1000px) {
-    ${({ theme }) => theme.mixins.flexCenter};
-    position: relative;
-    z-index: 10;
-    margin-right: -15px;
-    padding: 15px;
-    border: 0;
-    background-color: transparent;
-    color: inherit;
-    text-transform: none;
-    transition-timing-function: linear;
-    transition-duration: 0.15s;
-    transition-property: opacity, filter;
-  }
+  ${({ theme }) => theme.mixins.flexCenter};
+  position: relative;
+  z-index: 10;
+  margin-right: -15px;
+  padding: 15px;
+  border: 0;
+  background-color: transparent;
+  color: inherit;
+  text-transform: none;
+  transition-timing-function: linear;
+  transition-duration: 0.15s;
+  transition-property: opacity, filter;
 
   .ham-box {
     display: inline-block;
@@ -49,10 +45,10 @@ const StyledHamburgerButton = styled.button`
     background-color: var(--color-accent);
     transition-duration: 0.22s;
     transition-property: transform;
-    transition-delay: ${props => (props.menuOpen ? `0.12s` : `0s`)};
-    transform: rotate(${props => (props.menuOpen ? `225deg` : `0deg`)});
+    transition-delay: ${({ $open }) => ($open ? `0.12s` : `0s`)};
+    transform: rotate(${({ $open }) => ($open ? `225deg` : `0deg`)});
     transition-timing-function: cubic-bezier(
-      ${props => (props.menuOpen ? `0.215, 0.61, 0.355, 1` : `0.55, 0.055, 0.675, 0.19`)}
+      ${({ $open }) => ($open ? `0.215, 0.61, 0.355, 1` : `0.55, 0.055, 0.675, 0.19`)}
     );
     &:before,
     &:after {
@@ -70,41 +66,36 @@ const StyledHamburgerButton = styled.button`
       transition-property: transform;
     }
     &:before {
-      width: ${props => (props.menuOpen ? `100%` : `120%`)};
-      top: ${props => (props.menuOpen ? `0` : `-10px`)};
-      opacity: ${props => (props.menuOpen ? 0 : 1)};
-      transition: ${({ menuOpen }) =>
-    menuOpen ? 'var(--ham-before-active)' : 'var(--ham-before)'};
+      width: ${({ $open }) => ($open ? `100%` : `120%`)};
+      top: ${({ $open }) => ($open ? `0` : `-10px`)};
+      opacity: ${({ $open }) => ($open ? 0 : 1)};
+      transition: ${({ $open }) => ($open ? 'var(--ham-before-active)' : 'var(--ham-before)')};
     }
     &:after {
-      width: ${props => (props.menuOpen ? `100%` : `80%`)};
-      bottom: ${props => (props.menuOpen ? `0` : `-10px`)};
-      transform: rotate(${props => (props.menuOpen ? `-90deg` : `0`)});
-      transition: ${({ menuOpen }) => (menuOpen ? 'var(--ham-after-active)' : 'var(--ham-after)')};
+      width: ${({ $open }) => ($open ? `100%` : `80%`)};
+      bottom: ${({ $open }) => ($open ? `0` : `-10px`)};
+      transform: rotate(${({ $open }) => ($open ? `-90deg` : `0`)});
+      transition: ${({ $open }) => ($open ? 'var(--ham-after-active)' : 'var(--ham-after)')};
     }
   }
 `;
 
 const StyledSidebar = styled.aside`
-  display: none;
-
-  @media (max-width: 1000px) {
-    ${({ theme }) => theme.mixins.flexCenter};
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    padding: 50px 10px;
-    width: min(75vw, 400px);
-    height: 100vh;
-    outline: 0;
-    background-color: var(--color-bg-primary);
-    box-shadow: -10px 0px 30px -15px var(--color-shadow);
-    z-index: 9;
-    transform: translateX(${props => (props.menuOpen ? 0 : 100)}vw);
-    visibility: ${props => (props.menuOpen ? 'visible' : 'hidden')};
-    transition: var(--transition);
-  }
+  ${({ theme }) => theme.mixins.flexCenter};
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  padding: 50px 10px;
+  width: min(75vw, 400px);
+  height: var(--full-height);
+  outline: 0;
+  background-color: var(--color-bg-primary);
+  box-shadow: -10px 0px 30px -15px var(--color-shadow);
+  z-index: 9;
+  transform: translateX(${({ $open }) => ($open ? 0 : 100)}vw);
+  visibility: ${({ $open }) => ($open ? 'visible' : 'hidden')};
+  transition: var(--transition);
 
   nav {
     ${({ theme }) => theme.mixins.flexBetween};
@@ -124,15 +115,10 @@ const StyledSidebar = styled.aside`
     li {
       position: relative;
       margin: 0 auto 20px;
-      counter-increment: item 1;
       font-size: clamp(var(--fz-sm), 4vw, var(--fz-lg));
 
       @media (max-width: 600px) {
         margin: 0 auto 10px;
-      }
-
-      &:before {
-        display: none;
       }
     }
 
@@ -153,132 +139,86 @@ const StyledSidebar = styled.aside`
 
 const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-
-  const smoothScrollTo = (url) => {
-    const targetId = url.replace('/#', '');
-    const targetElement = document.getElementById(targetId);
-    
-    if (targetElement) {
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-    // Always close mobile menu after clicking any link
-    setMenuOpen(false);
-  };
-
   const buttonRef = useRef(null);
   const navRef = useRef(null);
+  const wrapperRef = useRef(null);
 
-  let menuFocusables;
-  let firstFocusableEl;
-  let lastFocusableEl;
-
-  const setFocusables = () => {
-    menuFocusables = [buttonRef.current, ...Array.from(navRef.current.querySelectorAll('a'))];
-    firstFocusableEl = menuFocusables[0];
-    lastFocusableEl = menuFocusables[menuFocusables.length - 1];
-  };
-
-  const handleBackwardTab = e => {
-    if (document.activeElement === firstFocusableEl) {
-      e.preventDefault();
-      lastFocusableEl.focus();
-    }
-  };
-
-  const handleForwardTab = e => {
-    if (document.activeElement === lastFocusableEl) {
-      e.preventDefault();
-      firstFocusableEl.focus();
-    }
-  };
-
-  const onKeyDown = e => {
-    switch (e.key) {
-      case KEY_CODES.ESCAPE:
-      case KEY_CODES.ESCAPE_IE11: {
-        setMenuOpen(false);
-        break;
-      }
-
-      case KEY_CODES.TAB: {
-        if (menuFocusables && menuFocusables.length === 1) {
-          e.preventDefault();
-          break;
-        }
-        if (e.shiftKey) {
-          handleBackwardTab(e);
-        } else {
-          handleForwardTab(e);
-        }
-        break;
-      }
-
-      default: {
-        break;
-      }
-    }
-  };
-
-  const onResize = e => {
-    if (e.currentTarget.innerWidth > 1000) {
-      setMenuOpen(false);
-    }
-  };
+  const closeMenu = () => setMenuOpen(false);
+  useOnClickOutside(wrapperRef, closeMenu);
 
   useEffect(() => {
-    document.addEventListener('keydown', onKeyDown);
+    // Keep keyboard focus inside the open menu; Escape closes it.
+    const onKeyDown = e => {
+      if (e.key === KEY_CODES.ESCAPE) {
+        closeMenu();
+        return;
+      }
+      if (e.key !== KEY_CODES.TAB || !navRef.current) {
+        return;
+      }
+      const focusables = [buttonRef.current, ...navRef.current.querySelectorAll('a')];
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    const onResize = () => {
+      if (window.innerWidth > NAV_COLLAPSE_BP) {
+        closeMenu();
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener('keydown', onKeyDown);
+    }
     window.addEventListener('resize', onResize);
-
-    setFocusables();
-
+    // Blur the page behind the open menu and stop it scrolling (styles: `body.blur` in GlobalStyle).
+    document.body.classList.toggle('blur', menuOpen);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('resize', onResize);
+      document.body.classList.remove('blur');
     };
-  }, []);
-
-  const wrapperRef = useRef();
-  useOnClickOutside(wrapperRef, () => setMenuOpen(false));
+  }, [menuOpen]);
 
   return (
     <StyledMenu>
-      <Helmet>
-        <body className={menuOpen ? 'blur' : ''} />
-      </Helmet>
-
       <div ref={wrapperRef}>
-        <StyledHamburgerButton onClick={toggleMenu} menuOpen={menuOpen} ref={buttonRef}>
+        <StyledHamburgerButton
+          ref={buttonRef}
+          onClick={() => setMenuOpen(!menuOpen)}
+          $open={menuOpen}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu">
           <div className="ham-box">
             <div className="ham-box-inner" />
           </div>
         </StyledHamburgerButton>
 
-        <StyledSidebar menuOpen={menuOpen} aria-hidden={!menuOpen} tabIndex={menuOpen ? 1 : -1}>
-          <nav ref={navRef}>
-            {navLinks && (
-              <ol>
-                {navLinks.map(({ url, name }, i) => (
-                  <li key={i}>
-                    <a 
-                      href={url}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        smoothScrollTo(url);
-                      }}
-                    >
-                      {name}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            )}
+        <StyledSidebar id="mobile-menu" $open={menuOpen} aria-hidden={!menuOpen}>
+          <nav ref={navRef} aria-label="Mobile">
+            <ol>
+              {navLinks.map(({ url, name }) => (
+                <li key={name}>
+                  <a href={url} onClick={closeMenu} tabIndex={menuOpen ? 0 : -1}>
+                    {name}
+                  </a>
+                </li>
+              ))}
+            </ol>
 
-            <a href={withPrefix('/Daksh_Adhar.pdf')} className="resume-link">
+            <a
+              href={withPrefix('/Daksh_Adhar.pdf')}
+              className="resume-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={menuOpen ? 0 : -1}>
               Resume
             </a>
           </nav>

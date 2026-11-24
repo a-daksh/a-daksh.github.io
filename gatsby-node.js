@@ -1,42 +1,15 @@
 /**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.org/docs/node-apis/
+ * Gatsby Node APIs: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/
  */
-
 const path = require('path');
-const _ = require('lodash');
 
-exports.createPages = async ({ actions, graphql, reporter }) => {
-  const { createPage } = actions;
-
-  // if (result.errors) {
-  //   reporter.panicOnBuild(`Error while running GraphQL query.`);
-  //   return;
-  // }
-
-};
-
-// https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
-exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
-  // https://www.gatsbyjs.org/docs/debugging-html-builds/#fixing-third-party-modules
-  if (stage === 'build-html') {
-    actions.setWebpackConfig({
-      module: {
-        rules: [
-          {
-            test: /scrollreveal/,
-            use: loaders.null(),
-          },
-          {
-            test: /animejs/,
-            use: loaders.null(),
-          },
-        ],
-      },
-    });
+exports.onCreateWebpackConfig = ({ stage, actions }) => {
+  // Don't ship source maps to production (they double the deploy size and expose local paths).
+  if (stage === 'build-javascript') {
+    actions.setWebpackConfig({ devtool: false });
   }
 
+  // Import aliases, e.g. `import { Layout } from '@components'`.
   actions.setWebpackConfig({
     resolve: {
       alias: {
@@ -46,10 +19,28 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
         '@fonts': path.resolve(__dirname, 'src/fonts'),
         '@hooks': path.resolve(__dirname, 'src/hooks'),
         '@images': path.resolve(__dirname, 'src/images'),
-        '@pages': path.resolve(__dirname, 'src/pages'),
         '@styles': path.resolve(__dirname, 'src/styles'),
         '@utils': path.resolve(__dirname, 'src/utils'),
       },
     },
   });
+};
+
+// Explicit content types so optional frontmatter fields (e.g. `video`, `url`) resolve
+// as files/strings even when no markdown file currently uses them.
+exports.createSchemaCustomization = ({ actions }) => {
+  actions.createTypes(`
+    type MarkdownRemark implements Node {
+      frontmatter: Frontmatter
+    }
+    type Frontmatter {
+      cover: File @fileByRelativePath
+      video: File @fileByRelativePath
+      url: String
+      github: String
+      external: String
+      tech: [String]
+      emoji: String
+    }
+  `);
 };
