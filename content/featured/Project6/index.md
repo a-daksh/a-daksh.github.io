@@ -1,5 +1,6 @@
 ---
 title: 'RL Post-Training of a Flow-Based VLA'
+label: 'Intro to Deep Learning Course · CMU'
 cover: './cover.jpg'
 video: './video.mp4'
 github: 'https://github.com/a-daksh/RLT-lerobot'

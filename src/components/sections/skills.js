@@ -8,8 +8,9 @@ import { usePrefersReducedMotion } from '@hooks';
 
 /*
  * Skills: a horizontally scrollable row of logos with previous/next buttons. It also steps along
- * on its own every few seconds (like the original carousel), pausing while the visitor hovers,
- * focuses or uses it, while it is off screen, and entirely for visitors who prefer reduced motion.
+ * on its own every few seconds (like the original carousel), also after the buttons are used. It
+ * holds while a keyboard user is focused in it, briefly after a manual swipe, while off screen,
+ * and entirely for visitors who prefer reduced motion.
  * Swiping / trackpad scrolling works too.
  * Logos are self-hosted in static/icons/skills/ (from devicon 2.16.0, MIT), plus JAX's own logo.
  * `invertOnDark`: logos drawn in black that would vanish on the dark theme.
@@ -34,8 +35,17 @@ const SKILLS = [
 ];
 
 const AUTOPLAY_MS = 2700; // same pace as the original carousel
-const RESUME_AFTER_MS = 8000; // after the visitor scrolls or clicks, wait this long before auto-stepping again
-const PAUSE_EVENTS = ['wheel', 'touchstart', 'keydown'];
+const MANUAL_PAUSE_MS = 5000; // after the visitor scrolls the row themselves, give them time to look
+const MANUAL_EVENTS = ['wheel', 'touchstart'];
+
+// Keyboard focus inside the row (not a mouse click, which also leaves the button focused).
+const hasKeyboardFocus = el => {
+  try {
+    return !!el.querySelector(':focus-visible');
+  } catch (e) {
+    return false; // browsers without :focus-visible
+  }
+};
 
 const StyledSkillsSection = styled.section`
   .skills-row {
@@ -170,19 +180,22 @@ const step = (track, direction) => {
 const Skills = () => {
   const revealContainer = useRef(null);
   const trackRef = useRef(null);
-  const pausedUntil = useRef(0);
+  const nextStepAt = useRef(0); // time of the next automatic step
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => reveal(revealContainer.current, revealConfig()), []);
 
+  // Buttons and auto-scroll work together: a click moves one logo, and auto-scroll carries on
+  // from there one interval later.
   const onArrow = direction => {
-    pausedUntil.current = Date.now() + RESUME_AFTER_MS;
+    nextStepAt.current = Date.now() + AUTOPLAY_MS;
     if (trackRef.current) {
       step(trackRef.current, direction);
     }
   };
 
-  // Auto-step only while the row is on screen, the tab is visible and nobody is interacting with it.
+  // Auto-step while the row is on screen and the tab is visible. It holds only while a keyboard
+  // user is focused inside the row, and briefly after the visitor swipes/scrolls it themselves.
   useEffect(() => {
     const track = trackRef.current;
     if (!track || prefersReducedMotion) {
@@ -190,45 +203,33 @@ const Skills = () => {
     }
     const row = track.parentElement;
     let onScreen = false;
-    let hovered = false;
+    nextStepAt.current = Date.now() + AUTOPLAY_MS;
 
     const observer = new IntersectionObserver(([entry]) => {
       onScreen = entry.isIntersecting;
     });
     observer.observe(track);
 
-    const onEnter = () => {
-      hovered = true;
+    const onManualScroll = () => {
+      nextStepAt.current = Date.now() + MANUAL_PAUSE_MS;
     };
-    const onLeave = () => {
-      hovered = false;
-    };
-    const pause = () => {
-      pausedUntil.current = Date.now() + RESUME_AFTER_MS;
-    };
-    row.addEventListener('pointerenter', onEnter);
-    row.addEventListener('pointerleave', onLeave);
-    PAUSE_EVENTS.forEach(e => track.addEventListener(e, pause, { passive: true }));
+    MANUAL_EVENTS.forEach(e => track.addEventListener(e, onManualScroll, { passive: true }));
 
     const timer = setInterval(() => {
-      const focused = row.contains(document.activeElement);
-      if (
-        onScreen &&
-        !hovered &&
-        !focused &&
-        !document.hidden &&
-        Date.now() > pausedUntil.current
-      ) {
+      const now = Date.now();
+      if (now < nextStepAt.current) {
+        return;
+      }
+      nextStepAt.current = now + AUTOPLAY_MS;
+      if (onScreen && !document.hidden && !hasKeyboardFocus(row)) {
         step(track, 1);
       }
-    }, AUTOPLAY_MS);
+    }, 250);
 
     return () => {
       clearInterval(timer);
       observer.disconnect();
-      row.removeEventListener('pointerenter', onEnter);
-      row.removeEventListener('pointerleave', onLeave);
-      PAUSE_EVENTS.forEach(e => track.removeEventListener(e, pause));
+      MANUAL_EVENTS.forEach(e => track.removeEventListener(e, onManualScroll));
     };
   }, [prefersReducedMotion]);
 
