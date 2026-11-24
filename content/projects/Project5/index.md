@@ -1,6 +1,7 @@
 ---
 title: 'Pluto Drone Control and Trajectory Planning'
-cover: './image.gif'
+cover: './cover.jpg'
+video: './video.mp4'
 github: 'https://github.com/a-daksh/Pluto-Drone-Control'
 tech:
   - Python

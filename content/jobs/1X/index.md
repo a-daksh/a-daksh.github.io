@@ -3,7 +3,7 @@ date: '2025-05-12'
 title: 'AI Resident'
 company: '1X Technologies'
 location: 'Palo Alto, California'
-range: 'May - August 2025'
+range: 'May – Aug 2025'
 url: 'https://www.1x.tech/'
 ---
 

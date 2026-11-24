@@ -3,7 +3,7 @@ date: '2'
 title: 'Grasp Force Optimization as a Bilinear Matrix Inequality Problem: A Deep Learning Approach'
 authors: 'Hirakjyoti Basumatary, Daksh Adhar, Riddhiman Shaw, Shyamanta M. Hazarika'
 venue: '6th National Conference on Multidisciplinary Design, Analysis and Optimization'
-publishDate: 'Dec. 2023'
+publishDate: 'Dec 2023'
 external: 'https://arxiv.org/abs/2312.05034'
 linkText: 'NCMDAO'
 showInPublications: true

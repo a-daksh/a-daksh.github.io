@@ -1,9 +1,9 @@
 ---
 date: '2023-01-12'
-title: 'Research Intern'
+title: 'Research Assistant'
 company: 'BRAIL, IITG'
 location: 'Guwahati, India'
-range: 'January 2023 - May 2024'
+range: 'Jan 2023 – May 2024'
 url: 'https://iitg.ac.in/lab/brail/index.php'
 ---
 
