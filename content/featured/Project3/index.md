@@ -1,5 +1,6 @@
 ---
 title: 'CMU Vision Language Autonomy Challenge'
+label: 'CMU VLA Challenge · IROS 2025'
 cover: './cover.png'
 github: 'https://github.com/a-daksh/Hierarchical-VLM-for-Vision-Language-Navigation'
 external: 'https://drive.google.com/drive/folders/1OA9SbvrHb39ljxXzefxj5CtzCdYZuzCI?usp=drive_link'

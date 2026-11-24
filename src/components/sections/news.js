@@ -111,7 +111,7 @@ const StyledNewsSection = styled.section`
   }
 `;
 
-// Short dated updates. Content: content/news/*.md with `date` and optional `emoji` frontmatter.
+// Short dated updates. Content: content/news/*.md with a `date` (YYYY-MM-DD) frontmatter field.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 // 'YYYY-MM-DD' -> 'Mon YYYY'. Done by hand (not toLocaleString) so the server-rendered HTML and the
@@ -133,7 +133,6 @@ const News = () => {
           html
           frontmatter {
             date
-            emoji
           }
         }
       }
@@ -146,11 +145,10 @@ const News = () => {
       <h2 className="news-heading">News</h2>
 
       <ul className="news-container">
-        {items.map(({ id, html, frontmatter: { date, emoji } }) => (
+        {items.map(({ id, html, frontmatter: { date } }) => (
           <li key={id} className="news-item">
             <div className="news-date">{formatMonth(date)}</div>
             <div className="news-content">
-              {emoji && <span aria-hidden="true">{emoji}</span>}
               <span dangerouslySetInnerHTML={{ __html: html }} />
             </div>
           </li>

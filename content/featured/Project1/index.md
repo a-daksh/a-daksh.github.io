@@ -1,5 +1,6 @@
 ---
 title: 'Stamp Pixel Art Using a Franka Arm'
+label: 'Robot Autonomy Course · CMU'
 cover: './cover.jpg'
 video: './video.mp4'
 github: 'https://github.com/a-daksh/pixel-art-franka'

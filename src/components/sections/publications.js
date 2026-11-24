@@ -172,7 +172,7 @@ const Publications = () => {
 
   useEffect(() => {
     reveal(revealTitle.current, revealConfig());
-    revealPublications.current.forEach((ref, i) => reveal(ref, revealConfig(i * 100)));
+    revealPublications.current.forEach(ref => reveal(ref, revealConfig()));
   }, []);
 
   return (

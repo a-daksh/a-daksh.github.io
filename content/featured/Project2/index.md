@@ -1,5 +1,6 @@
 ---
 title: 'Unitree G1 Soccer Ball Kicking'
+label: 'Optimal Control & RL Course · CMU'
 cover: './cover.jpg'
 video: './video.mp4'
 github: 'https://github.com/a-daksh/16745_Unitree_G1_Goal_Kicking'

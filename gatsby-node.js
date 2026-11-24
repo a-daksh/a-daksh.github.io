@@ -40,7 +40,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       github: String
       external: String
       tech: [String]
-      emoji: String
+      label: String # featured projects: line above the title (lab, course, capstone...)
     }
   `);
 };

@@ -1,5 +1,6 @@
 ---
 title: 'Bone.P.A.R.T.E'
+label: 'MRSD Capstone · CMU'
 cover: './cover.jpg'
 video: './video.mp4'
 github: 'https://github.com/KNEEpoleon'

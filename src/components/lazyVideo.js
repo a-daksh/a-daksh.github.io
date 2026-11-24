@@ -13,10 +13,81 @@ const StyledVideo = styled.video`
   transition: opacity 0.4s var(--easing);
 `;
 
+/*
+ * Background preloading: once the page has loaded and gone quiet, download the videos one at a
+ * time, in page order, so they're ready by the time the visitor scrolls to them. A video that
+ * comes on screen first simply starts loading right away (and the queue skips it).
+ * Skipped on data-saver / slow connections, where videos load only when they come into view.
+ */
+const PRELOAD_AFTER_MS = 3000; // after page load: leaves the network to the page and the 3D hero first
+const PRELOAD_TIMEOUT_MS = 20000; // don't let one stuck video block the rest of the queue
+
+const queue = [];
+let preloadScheduled = false;
+
+const slowConnection = () => {
+  const c = typeof navigator !== 'undefined' && navigator.connection;
+  return !!c && (c.saveData || /(^|-)2g|3g/.test(c.effectiveType || ''));
+};
+
+const loadSrc = (video, src) => {
+  if (!video.getAttribute('src')) {
+    video.preload = 'auto';
+    video.setAttribute('src', src);
+  }
+};
+
+const preloadNext = () => {
+  const item = queue.shift();
+  if (!item) {
+    return;
+  }
+  const { video, src } = item;
+  if (!video.isConnected || video.getAttribute('src')) {
+    preloadNext(); // removed from the page, or already loading because it came on screen
+    return;
+  }
+  let finished = false;
+  const done = () => {
+    if (finished) {
+      return;
+    }
+    finished = true;
+    video.removeEventListener('canplaythrough', done);
+    video.removeEventListener('error', done);
+    preloadNext();
+  };
+  video.addEventListener('canplaythrough', done);
+  video.addEventListener('error', done);
+  setTimeout(done, PRELOAD_TIMEOUT_MS);
+  loadSrc(video, src);
+};
+
+const schedulePreload = () => {
+  if (preloadScheduled || slowConnection()) {
+    return;
+  }
+  preloadScheduled = true;
+  const start = () =>
+    setTimeout(() => {
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(preloadNext, { timeout: 2000 });
+      } else {
+        preloadNext();
+      }
+    }, PRELOAD_AFTER_MS);
+  if (document.readyState === 'complete') {
+    start();
+  } else {
+    window.addEventListener('load', start, { once: true });
+  }
+};
+
 /**
- * GIF-style looping video (muted, inline, no controls) that only downloads when it comes near the
- * viewport and pauses while off-screen. Purely decorative: the cover image underneath carries the
- * alt text and is what visitors with reduced motion (or without video support) see.
+ * GIF-style looping video (muted, inline, no controls). It plays while near the viewport and pauses
+ * while off-screen; it is downloaded either in the background (see above) or when it first comes
+ * near the viewport. Purely decorative: the cover image underneath carries the alt text and is what
+ * visitors with reduced motion (or without video support) see.
  */
 const LazyVideo = ({ src, className }) => {
   const ref = useRef(null);
@@ -28,10 +99,11 @@ const LazyVideo = ({ src, className }) => {
       return undefined;
     }
 
+    queue.push({ video, src });
+    schedulePreload();
+
     const play = () => {
-      if (!video.getAttribute('src')) {
-        video.setAttribute('src', src);
-      }
+      loadSrc(video, src);
       const p = video.play();
       if (p && p.catch) {
         p.catch(() => {}); // autoplay can be refused (e.g. data saver); the cover image stays.
@@ -46,7 +118,7 @@ const LazyVideo = ({ src, className }) => {
           video.pause();
         }
       },
-      { rootMargin: '300px 0px' },
+      { rootMargin: '600px 0px' },
     );
     observer.observe(video);
     return () => observer.disconnect();

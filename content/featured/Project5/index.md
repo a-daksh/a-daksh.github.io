@@ -1,5 +1,6 @@
 ---
 title: 'MMOsaic: Combining Specialist Policies for Generalist Multi-Agent Play'
+label: 'Deep RL & Control Course · CMU'
 cover: './cover.jpg'
 video: './video.mp4'
 github: 'https://github.com/MMO-saic/'

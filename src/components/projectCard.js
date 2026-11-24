@@ -20,6 +20,7 @@ export const query = graphql`
   fragment ProjectCard on MarkdownRemark {
     html
     frontmatter {
+      label
       title
       tech
       github
@@ -278,9 +279,9 @@ const StyledProject = styled.div`
   }
 `;
 
-const ProjectCard = forwardRef(({ project, overline }, ref) => {
+const ProjectCard = forwardRef(({ project }, ref) => {
   const { frontmatter, html } = project;
-  const { title, tech, github, external, cover, video } = frontmatter;
+  const { label, title, tech, github, external, cover, video } = frontmatter;
   const link = external || github;
   const image = cover && cover.childImageSharp ? cover.childImageSharp.gatsbyImageData : null;
 
@@ -294,7 +295,7 @@ const ProjectCard = forwardRef(({ project, overline }, ref) => {
   return (
     <StyledProject ref={ref}>
       <div className="project-content">
-        <p className="project-overline">{overline}</p>
+        {label && <p className="project-overline">{label}</p>}
         <h3 className="project-title">{title}</h3>
         <div className="project-description" dangerouslySetInnerHTML={{ __html: html }} />
 
@@ -356,7 +357,6 @@ ProjectCard.propTypes = {
     html: PropTypes.string,
     frontmatter: PropTypes.object.isRequired,
   }).isRequired,
-  overline: PropTypes.string.isRequired,
 };
 
 export default ProjectCard;

@@ -19,10 +19,10 @@ module.exports = {
   ],
 
   // Settings for the "fade up on scroll" effect (src/utils/reveal.js).
-  revealConfig: (delay = 200) => ({
+  revealConfig: (delay = 50) => ({
     delay, // ms
     distance: 20, // px
-    duration: 500, // ms
+    duration: 400, // ms
     easing: 'cubic-bezier(0.645, 0.045, 0.355, 1)',
   }),
 };

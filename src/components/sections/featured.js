@@ -42,7 +42,8 @@ const Featured = () => {
 
   useEffect(() => {
     reveal(revealTitle.current, revealConfig());
-    revealProjects.current.forEach((el, i) => reveal(el, revealConfig(i * 100)));
+    // Projects are stacked vertically and each reveals as it scrolls in, so no stagger.
+    revealProjects.current.forEach(el => reveal(el, revealConfig()));
     reveal(revealArchiveLink.current, revealConfig());
   }, []);
 
@@ -57,7 +58,6 @@ const Featured = () => {
           <ProjectCard
             key={project.id}
             project={project}
-            overline="Featured Project"
             ref={el => (revealProjects.current[i] = el)}
           />
         ))}

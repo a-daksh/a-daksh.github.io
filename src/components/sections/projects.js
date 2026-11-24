@@ -40,7 +40,8 @@ const Projects = () => {
 
   useEffect(() => {
     reveal(revealTitle.current, revealConfig());
-    revealProjects.current.forEach((el, i) => reveal(el, revealConfig(i * 100)));
+    // Grid: a small left-to-right stagger within each row of three.
+    revealProjects.current.forEach((el, i) => reveal(el, revealConfig((i % 3) * 80)));
   }, []);
 
   return (
@@ -54,7 +55,6 @@ const Projects = () => {
           <ProjectCard
             key={project.id}
             project={project}
-            overline="Project"
             ref={el => (revealProjects.current[i] = el)}
           />
         ))}

@@ -1,5 +1,6 @@
 ---
 title: 'DexterLab: Benchmarking Generative Dexterous Policies'
+label: 'MaxLab · CMU'
 cover: './cover.jpg'
 video: './video.mp4'
 tech:

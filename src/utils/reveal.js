@@ -33,17 +33,16 @@ const getObserver = () => {
             observer.unobserve(entry.target);
           }
         }),
-      { threshold: 0.15, rootMargin: '0px 0px -5% 0px' },
+      // Fire as soon as the element's top edge is 40px into the screen, however tall it is (a
+      // ratio threshold made tall blocks wait until a big chunk of them was already on screen).
+      { threshold: 0, rootMargin: '0px 0px -40px 0px' },
     );
   }
   return observer;
 };
 
 /** Hide `el` now and fade it up when it scrolls into view. No-op when disabled or el is null. */
-export const reveal = (
-  el,
-  { delay = 200, distance = 20, duration = 500, easing = 'ease' } = {},
-) => {
+export const reveal = (el, { delay = 0, distance = 20, duration = 400, easing = 'ease' } = {}) => {
   if (isSSR || prefersReducedMotion || !el) {
     return;
   }
