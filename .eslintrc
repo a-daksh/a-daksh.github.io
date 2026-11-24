@@ -4,7 +4,7 @@
     "requireConfigFile": false,
     "ecmaVersion": 2022,
     "babelOptions": {
-      "presets": ["babel-preset-gatsby"]
+      "presets": ["@babel/preset-react"]
     }
   },
   "env": {

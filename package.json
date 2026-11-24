@@ -57,7 +57,9 @@
     "three": "0.170.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
     "@babel/eslint-parser": "7.25.9",
+    "@babel/preset-react": "7.29.7",
     "@gltf-transform/cli": "4.1.1",
     "@upstatement/eslint-config": "2.0.0",
     "@upstatement/prettier-config": "^1.1.0",
