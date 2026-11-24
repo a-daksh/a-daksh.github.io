@@ -1,0 +1,13 @@
+# Normalise line endings in the repo; shell scripts must stay LF so they run in bash/WSL.
+* text=auto
+*.sh text eol=lf
+
+# Binary media
+*.mp4 binary
+*.glb binary
+*.bin binary
+*.jpg binary
+*.png binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
