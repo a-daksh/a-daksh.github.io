@@ -11,7 +11,7 @@ import { useTheme } from '@contexts/ThemeContext';
  *   dexterlab.bin.gz - int16 body poses per frame, frame-delta encoded + gzipped (see dexterlab.json)
  *   poster-*.webp  - still frames shown until (or instead of) the live 3D scene
  *
- * three.js and the assets are only fetched after the page has loaded and the browser is idle, and
+ * three.js and the assets are fetched together once the page has loaded (or 1.2 s after it appears), and
  * never when WebGL is unavailable or the visitor has data-saver / a slow connection.
  */
 
@@ -199,18 +199,26 @@ const HeroRobot = () => {
     let cleanup = () => {};
 
     const boot = async () => {
-      const [THREE, { GLTFLoader }, { OrbitControls }, { MeshoptDecoder }] = await Promise.all([
-        import('three'),
-        import('three/examples/jsm/loaders/GLTFLoader.js'),
-        import('three/examples/jsm/controls/OrbitControls.js'),
-        import('three/examples/jsm/libs/meshopt_decoder.module.js'),
-      ]);
+      // Download the code and the robot data in parallel (not one after the other).
+      const fetchOk = path =>
+        fetch(withPrefix(`${ASSET_DIR}/${path}`)).then(r => {
+          if (!r.ok) {
+            throw new Error(`${path}: HTTP ${r.status}`);
+          }
+          return r;
+        });
+      const [THREE, { GLTFLoader }, { OrbitControls }, { MeshoptDecoder }, glb, meta, poses] =
+        await Promise.all([
+          import('three'),
+          import('three/examples/jsm/loaders/GLTFLoader.js'),
+          import('three/examples/jsm/controls/OrbitControls.js'),
+          import('three/examples/jsm/libs/meshopt_decoder.module.js'),
+          fetchOk('dexterlab.glb').then(r => r.arrayBuffer()),
+          fetchOk('dexterlab.json').then(r => r.json()),
+          fetchOk('dexterlab.bin.gz').then(loadPoses),
+        ]);
       const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder); // geometry is meshopt-compressed
-      const [gltf, meta, poses] = await Promise.all([
-        loader.loadAsync(withPrefix(`${ASSET_DIR}/dexterlab.glb`)),
-        fetch(withPrefix(`${ASSET_DIR}/dexterlab.json`)).then(r => r.json()),
-        fetch(withPrefix(`${ASSET_DIR}/dexterlab.bin.gz`)).then(loadPoses),
-      ]);
+      const gltf = await loader.parseAsync(glb, '');
       const mount = mountRef.current;
       if (disposed || !mount) {
         return;
@@ -448,17 +456,13 @@ const HeroRobot = () => {
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(mount);
 
+      const syncPlayback = () => (state.visible && !document.hidden ? start() : stop());
       const visibility = new IntersectionObserver(([entry]) => {
         state.visible = entry.isIntersecting;
-        if (state.visible && !document.hidden) {
-          start();
-        } else {
-          stop();
-        }
+        syncPlayback();
       });
       visibility.observe(mount);
-      const onVisibilityChange = () => (document.hidden || !state.visible ? stop() : start());
-      document.addEventListener('visibilitychange', onVisibilityChange);
+      document.addEventListener('visibilitychange', syncPlayback);
 
       // Reduced motion: a still pose, redrawn only when the visitor drags.
       if (reduceMotion) {
@@ -484,11 +488,19 @@ const HeroRobot = () => {
       setDemoCount(meta.demos.length);
       setLive(true);
 
+      // Safety net: start right away if the stage is on screen, without waiting for the observer's
+      // first report (which some browsers deliver late, leaving a still robot).
+      const rect = mount.getBoundingClientRect();
+      if (rect.bottom > 0 && rect.top < window.innerHeight && rect.width > 0) {
+        state.visible = true;
+        syncPlayback();
+      }
+
       cleanup = () => {
         stop();
         visibility.disconnect();
         resizeObserver.disconnect();
-        document.removeEventListener('visibilitychange', onVisibilityChange);
+        document.removeEventListener('visibilitychange', syncPlayback);
         controls.dispose();
         geometries.forEach(g => g.dispose());
         Object.values(materials).forEach(m => m.dispose());
@@ -499,24 +511,36 @@ const HeroRobot = () => {
       };
     };
 
-    // Wait for the page to finish loading and the browser to go idle.
+    // Start once the page has loaded, or 1.2 s after it appears, whichever comes first, so slow
+    // images further down the page don't hold the robot back. Then wait for a quiet moment
+    // (Safari has no requestIdleCallback, so it uses a short timeout instead).
+    let scheduled = false;
     let idleHandle = null;
+    let fallbackTimer = null;
     const schedule = () => {
+      if (scheduled) {
+        return;
+      }
+      scheduled = true;
+      clearTimeout(fallbackTimer);
+      window.removeEventListener('load', schedule);
       const run = () =>
         boot().catch(err => console.warn(`HeroRobot: ${err && (err.message || err)}`));
       idleHandle = window.requestIdleCallback
-        ? { idle: window.requestIdleCallback(run, { timeout: 3000 }) }
-        : { timer: setTimeout(run, 300) };
+        ? { idle: window.requestIdleCallback(run, { timeout: 1000 }) }
+        : { timer: setTimeout(run, 100) };
     };
     if (document.readyState === 'complete') {
       schedule();
     } else {
-      window.addEventListener('load', schedule, { once: true });
+      window.addEventListener('load', schedule);
+      fallbackTimer = setTimeout(schedule, 1200);
     }
 
     return () => {
       disposed = true;
       window.removeEventListener('load', schedule);
+      clearTimeout(fallbackTimer);
       if (idleHandle && idleHandle.idle) {
         window.cancelIdleCallback(idleHandle.idle);
       }
